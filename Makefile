@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2021/11/12 20:24:51 by ldutriez         ###   ########.fr        #
+#    Updated: 2021/11/13 13:29:41 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ OBJ_DIR = 		objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-SRC 	=		test.cpp
+SRC 	=		test.cpp \
+				\
+				Application.cpp \
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
@@ -37,6 +39,9 @@ endif
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
 
+#SDL file location
+SDL_FILE = /usr/include/SDL2/SDL.h
+
 # Colors
 
 _GREY=	$'\033[30m
@@ -48,17 +53,23 @@ _PURPLE=$'\033[35m
 _CYAN=	$'\033[36m
 _WHITE=	$'\033[37m
 
-all:			$(NAME).a
+all:			$(SDL_FILE) $(NAME).a
 
 $(NAME).a:		$(OBJ) Makefile
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
 				@ar rc $@ $(OBJ)
 				@ranlib $@
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
-
+				
+$(SDL_FILE):
+				@echo -n "-----\nInstalling $(_YELLOW)sdl2$(_WHITE) ... "
+				@sudo echo "installing SDL"
+				@yes | sudo apt install libsdl2-2.0-0 libsdl2-gfx-1.0-0 libsdl2-net-2.0-0 libsdl2-ttf-dev
+				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+				
 test:			$(NAME).a
 				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) ... \c"
-				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) $< -o $(NAME)
+				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
 				@./$(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
@@ -72,7 +83,7 @@ show:
 $(OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				@mkdir -p $(OBJ_DIR)
-				@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
+				@$(CC) $(CFLAGS) $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<
 				@echo "$(_GREEN)DONE$(_WHITE)"
 
 re:				fclean all
