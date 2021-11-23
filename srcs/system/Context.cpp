@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:48:15 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/13 21:53:45 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/23 09:51:30 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,10 @@ lcppgl::Context::Context(unsigned char id, const char * title, int width, int he
  _is_running(true), _fps_limit(30),
  _event_functors(), _render_functors()
 {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		throw std::invalid_argument(SDL_GetError());
 	if (!(_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL)))
 		throw std::invalid_argument(SDL_GetError());
 	if (!(_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
 		throw std::invalid_argument(SDL_GetError());
-	if (TTF_Init() == -1)
-		throw std::invalid_argument(TTF_GetError());
-	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == 0)
-		throw std::invalid_argument(IMG_GetError());
 }
 
 lcppgl::Context::Context(const Context &src)
@@ -44,9 +38,6 @@ lcppgl::Context::~Context(void)
 	{
 		SDL_DestroyWindow(_window);
 	}
-	TTF_Quit();
-	IMG_Quit();
-	SDL_Quit();
 }
 
 SDL_Window *

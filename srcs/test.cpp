@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/13 22:02:41 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/23 10:07:14 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	exit_input(lcppgl::Context & context)
 {
 	SDL_Event event;
-	while (SDL_PollEvent(&event))
+	if (SDL_PollEvent(&event))
 	{
 		switch (event.type)
 		{
@@ -38,7 +38,7 @@ void	exit_input(lcppgl::Context & context)
 void	exit_input2(lcppgl::Context & context)
 {
 	SDL_Event event;
-	while (SDL_PollEvent(&event))
+	if (SDL_PollEvent(&event))
 	{
 		switch (event.type)
 		{
@@ -86,10 +86,10 @@ int	main(void)
 		main_context.add_event_functor(exit_input);
 		main_context.add_render_functor(random_rectangle);
 
-		// lcppgl::Context & second = lcppgl::Application::instance().create_context("second", 300, 600);
-		// second.set_fps_limit(70);
-		// second.add_event_functor(exit_input2);
-		// second.add_render_functor(random_rectangle);
+		lcppgl::Context & second = lcppgl::Application::instance().create_context("second", 300, 600);
+		second.set_fps_limit(70);
+		second.add_event_functor(exit_input2);
+		second.add_render_functor(random_rectangle);
 
 		lcppgl::Application::instance().run();
 	}

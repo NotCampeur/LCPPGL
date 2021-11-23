@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:48:15 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/13 22:01:26 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/23 10:04:35 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,23 @@
 
 lcppgl::Application::Application(void) : lcppgl::Singleton()
 , _context(), _is_running(false)
-{}
+{
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		throw std::invalid_argument(SDL_GetError());
+	if (TTF_Init() == -1)
+		throw std::invalid_argument(TTF_GetError());
+	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == 0)
+		throw std::invalid_argument(IMG_GetError());
+}
 
 lcppgl::Application::~Application(void)
 {
 	for (size_t i = 0; i < _context.size(); i++)
 		delete _context[i];
 	_context.clear();
+	TTF_Quit();
+	IMG_Quit();
+	SDL_Quit();
 }
 
 lcppgl::Application &
@@ -45,11 +55,11 @@ lcppgl::Application::context(size_t index) const
 void
 lcppgl::Application::destroy_context(size_t index)
 {
-	for (size_t i = index; i < _context.size(); i++)
+	for (size_t i = index + 1; i < _context.size(); i++)
 		_context[i]->set_id(_context[i]->id() - 1);
 	delete _context.at(index);
 	_context.erase(_context.begin() + index);
-	if (_context.size() == 0)
+	if (_context.empty() == true)
 		_is_running = false;
 }
 
@@ -57,11 +67,11 @@ void
 lcppgl::Application::destroy_context(lcppgl::Context & context)
 {
 	unsigned char index = context.id();
-	for (size_t i = index; i < _context.size(); i++)
+	for (size_t i = index + 1; i < _context.size(); i++)
 		_context[i]->set_id(_context[i]->id() - 1);
 	delete _context.at(index);
 	_context.erase(_context.begin() + index);
-	if (_context.size() == 0)
+	if (_context.empty() == true)
 		_is_running = false;
 }
 
@@ -83,7 +93,6 @@ lcppgl::Application::run(void)
 				i--;
 			}
 		}
-		std::cout << _context.size() << std::endl;
 	}
 }
 
