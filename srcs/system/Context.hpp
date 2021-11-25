@@ -66,20 +66,12 @@ namespace lcppgl
 			void	set_fullscreen(const bool fullscreen);
 			void	set_resizable(const bool resizable);
 			void	set_borderless(const bool borderless);
-			void	set_draw_color(const SDL_Color & color);
-			void	set_draw_color(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a);
 
 			// If the fps is set to 0 the fps are not limited.
 			void	set_fps_limit(const unsigned int fps);
 
-			void	clear(void);
-			void	present(void);
-
 			void	update(void);
 			void	stop(void);
-
-			void	put_outlined_rect(const SDL_Rect & rect);
-			void	put_filled_rect(const SDL_Rect & rect);
 
 			// Return the index of the function in the functor.
 			int		add_event_functor(void (*functor)(lcppgl::Context &));

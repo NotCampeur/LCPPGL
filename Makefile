@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2021/11/13 20:11:55 by ldutriez         ###   ########.fr        #
+#    Updated: 2021/11/25 17:32:45 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,9 @@ vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 SRC 	=		test.cpp \
 				\
 				Application.cpp \
-				Context.cpp
+				Context.cpp \
+				\
+				Render.cpp
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:48:15 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/23 09:51:30 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/25 17:09:40 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,33 +141,9 @@ lcppgl::Context::set_borderless(const bool borderless)
 }
 
 void
-lcppgl::Context::set_draw_color(const SDL_Color & color)
-{
-	SDL_SetRenderDrawColor(_renderer, color.r, color.g, color.b, color.a);
-}
-
-void
-lcppgl::Context::set_draw_color(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a)
-{
-	SDL_SetRenderDrawColor(_renderer, r, g, b, a);
-}
-
-void
 lcppgl::Context::set_fps_limit(const unsigned int fps_limit)
 {
 	_fps_limit = (fps_limit != 0) ? fps_limit : UINT32_MAX;
-}
-
-void
-lcppgl::Context::clear(void)
-{
-	SDL_RenderClear(_renderer);
-}
-
-void
-lcppgl::Context::present(void)
-{
-	SDL_RenderPresent(_renderer);
 }
 
 void
@@ -188,18 +164,6 @@ void
 lcppgl::Context::stop(void)
 {
 	_is_running = false;
-}
-
-void
-lcppgl::Context::put_outlined_rect(const SDL_Rect & rect)
-{
-	SDL_RenderDrawRect(_renderer, &rect);
-}
-
-void
-lcppgl::Context::put_filled_rect(const SDL_Rect & rect)
-{
-	SDL_RenderFillRect(_renderer, &rect);
 }
 
 void
