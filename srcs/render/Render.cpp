@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:53:01 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/25 17:33:37 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/25 20:36:11 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,15 @@ lcppgl::Render::set_draw_color(const Uint8 r, const Uint8 g, const Uint8 b, cons
 }
 
 void
-lcppgl::Render::put_outlined_rect(const SDL_Rect & rect)
+lcppgl::Render::put_outlined_rect(const lcppgl::tools::Rectangle & rect)
 {
-	SDL_RenderDrawRect(_current_context.renderer(), &rect);
+	SDL_RenderDrawRect(_current_context.renderer(), (SDL_Rect *)&rect);
 }
 
 void
-lcppgl::Render::put_filled_rect(const SDL_Rect & rect)
+lcppgl::Render::put_filled_rect(const lcppgl::tools::Rectangle & rect)
 {
-	SDL_RenderFillRect(_current_context.renderer(), &rect);
+	SDL_RenderFillRect(_current_context.renderer(), (SDL_Rect *)&rect);
 }
 
 void

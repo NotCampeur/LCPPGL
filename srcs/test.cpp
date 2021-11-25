@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/25 17:13:06 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/25 19:46:03 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,21 +39,16 @@ void	exit_input(lcppgl::Context & context)
 void	random_rectangle(lcppgl::Context & context)
 {
 	lcppgl::Render render(context);
-
+	lcppgl::tools::Rectangle rect_one(0, 0, rand() % 100 + 50, rand() % 100 + 50);
+	lcppgl::tools::Rectangle rect_two(0, 0, rand() % 100 + 50, rand() % 100 + 50);
+	
+	rect_one.move(rand() % (context.width() - rect_one.width()), rand() % (context.height() - rect_one.height()));
+	rect_two.move(rand() % (context.width() - rect_two.width()), rand() % (context.height() - rect_two.height()));
 	render.clear();
-	SDL_Rect rect;
-	rect.w = rand() % 100 + 50;
-	rect.h = rand() % 100 + 50;
-	rect.x = rand() % (context.width() - rect.w);
-	rect.y = rand() % (context.height() - rect.h);
 	render.set_draw_color(rand() % 255, rand() % 255, rand() % 255, 255);
-	render.put_filled_rect(rect);
+	render.put_filled_rect(rect_one);
 	render.set_draw_color(rand() % 255, rand() % 255, rand() % 255, 255);
-	rect.w = rand() % 100 + 50;
-	rect.h = rand() % 100 + 50;
-	rect.x = rand() % (context.width() - rect.w);
-	rect.y = rand() % (context.height() - rect.h);
-	render.put_filled_rect(rect);
+	render.put_filled_rect(rect_two);
 	render.set_draw_color(0, 0, 0, 255);
 	render.present();
 }
