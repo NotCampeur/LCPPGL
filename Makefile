@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2021/11/25 17:32:45 by ldutriez         ###   ########.fr        #
+#    Updated: 2021/12/01 19:24:46 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,8 +42,7 @@ endif
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
 
-#SDL file location
-SDL_FILE = /usr/include/SDL2/SDL.h
+SDL = ./ressources/great.png
 
 # Colors
 
@@ -56,7 +55,7 @@ _PURPLE=$'\033[35m
 _CYAN=	$'\033[36m
 _WHITE=	$'\033[37m
 
-all:			$(SDL_FILE) $(NAME).a
+all:			$(SDL) $(NAME).a
 
 $(NAME).a:		$(OBJ) Makefile
 				@echo "-----\nCompiling $(_YELLOW)$@$(_WHITE) ... \c"
@@ -64,12 +63,9 @@ $(NAME).a:		$(OBJ) Makefile
 				@ranlib $@
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 				
-$(SDL_FILE):
-				@echo -n "-----\nInstalling $(_YELLOW)sdl2$(_WHITE) ... "
-				@sudo echo "installing SDL"
-				@yes | sudo apt install libsdl2-2.0-0 libsdl2-gfx-1.0-0 libsdl2-net-2.0-0 libsdl2-ttf-dev
-				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
-				
+$(SDL):
+				@./ressources/installing_SDL2.sh
+
 test:			$(NAME).a
 				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) ... \c"
 				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
