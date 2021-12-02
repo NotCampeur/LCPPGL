@@ -1,51 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Render.cpp                                         :+:      :+:    :+:   */
+/*   Printer.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:53:01 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/25 21:36:07 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/02 07:53:48 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Render.hpp"
+#include "Printer.hpp"
 
 
-lcppgl::Render::Render(lcppgl::Context & context)
+lcppgl::Printer::Printer(lcppgl::Context & context)
 : _current_context(context)
 {}
 
-lcppgl::Render::~Render()
+lcppgl::Printer::~Printer()
 {}
 
 void
-lcppgl::Render::set_current_context(lcppgl::Context & context)
+lcppgl::Printer::set_current_context(lcppgl::Context & context)
 {
 	_current_context = context;
 }
 
 void
-lcppgl::Render::set_draw_color(const SDL_Color & color)
+lcppgl::Printer::set_draw_color(const SDL_Color & color)
 {
 	SDL_SetRenderDrawColor(_current_context.renderer(), color.r, color.g, color.b, color.a);
 }
 
 void
-lcppgl::Render::set_draw_color(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a)
+lcppgl::Printer::set_draw_color(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a)
 {
 	SDL_SetRenderDrawColor(_current_context.renderer(), r, g, b, a);
 }
 
 void
-lcppgl::Render::put_outlined_rect(const lcppgl::tools::Rectangle & rect)
+lcppgl::Printer::put_outlined_rect(const lcppgl::tools::Rectangle & rect)
 {
 	SDL_RenderDrawRect(_current_context.renderer(), (SDL_Rect *)&rect);
 }
 
 void
-lcppgl::Render::put_outlined_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color)
+lcppgl::Printer::put_outlined_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color)
 {
 	Uint8 r, g, b, a;
 
@@ -56,13 +56,13 @@ lcppgl::Render::put_outlined_rect(const lcppgl::tools::Rectangle & rect, const l
 }
 
 void
-lcppgl::Render::put_filled_rect(const lcppgl::tools::Rectangle & rect)
+lcppgl::Printer::put_filled_rect(const lcppgl::tools::Rectangle & rect)
 {
 	SDL_RenderFillRect(_current_context.renderer(), (SDL_Rect *)&rect);
 }
 
 void
-lcppgl::Render::put_filled_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color)
+lcppgl::Printer::put_filled_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color)
 {
 	Uint8 r, g, b, a;
 
@@ -73,13 +73,13 @@ lcppgl::Render::put_filled_rect(const lcppgl::tools::Rectangle & rect, const lcp
 }
 
 void
-lcppgl::Render::clear(void)
+lcppgl::Printer::clear(void)
 {
 	SDL_RenderClear(_current_context.renderer());
 }
 
 void
-lcppgl::Render::present(void)
+lcppgl::Printer::present(void)
 {
 	SDL_RenderPresent(_current_context.renderer());
 }

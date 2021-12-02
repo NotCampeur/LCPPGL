@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:00:58 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/02 05:40:07 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/02 07:52:56 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@
 # include "Application.hpp"
 # include "Context.hpp"
 # include "lcppgl_tools.hpp"
-# include "Render.hpp"
+# include "Printer.hpp"
 
 #endif

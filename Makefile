@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2021/12/02 06:04:05 by ldutriez         ###   ########.fr        #
+#    Updated: 2021/12/02 07:53:10 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ SRC 	=		test.cpp \
 				Application.cpp \
 				Context.cpp \
 				\
-				Render.cpp \
+				Printer.cpp \
 				\
 				Rectangle.cpp Color.cpp
 

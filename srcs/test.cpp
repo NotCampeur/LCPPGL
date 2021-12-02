@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/02 05:25:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/02 07:52:05 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	exit_input(lcppgl::Context & context)
 // Put a rectangle on the screen with random position and color.
 void	random_rectangle(lcppgl::Context & context)
 {
-	lcppgl::Render render(context);
+	lcppgl::Printer render(context);
 	lcppgl::tools::Rectangle rect_one(0, 0, rand() % 100 + 50, rand() % 100 + 50);
 	lcppgl::tools::Rectangle rect_two(0, 0, rand() % 100 + 50, rand() % 100 + 50);
 	
@@ -56,7 +56,7 @@ void	random_rectangle(lcppgl::Context & context)
 // Put two overlapping rectangles on the screen to test color blending.
 void	overlapping_rectangles(lcppgl::Context & context)
 {
-	lcppgl::Render render(context);
+	lcppgl::Printer render(context);
 	lcppgl::tools::Color add_of_red_and_blue;
 	lcppgl::tools::Color sub_of_red_and_fifty;
 	

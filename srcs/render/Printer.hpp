@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Render.hpp                                         :+:      :+:    :+:   */
+/*   Printer.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LCPPGL_RENDER_HPP
-# define LCPPGL_RENDER_HPP
+#ifndef LCPPGL_Printer_HPP
+# define LCPPGL_Printer_HPP
 
 # include "lcppgl.hpp"
 
@@ -19,14 +19,14 @@ namespace lcppgl {namespace tools {class Rectangle;class Color;}}
 
 namespace lcppgl
 {
-	class Render
+	class Printer
 	{
 		private:
 			Context	& _current_context;
 			
 		public:
-			Render(Context & context);
-			~Render();
+			Printer(Context & context);
+			~Printer();
 
 			void	set_current_context(Context & context);
 
