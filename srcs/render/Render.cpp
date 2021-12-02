@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:53:01 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/25 20:36:11 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/11/25 21:36:07 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,31 @@ lcppgl::Render::put_outlined_rect(const lcppgl::tools::Rectangle & rect)
 }
 
 void
+lcppgl::Render::put_outlined_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color)
+{
+	Uint8 r, g, b, a;
+
+	SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
+	set_draw_color(color);
+	SDL_RenderDrawRect(_current_context.renderer(), (SDL_Rect *)&rect);
+	set_draw_color(r, g, b, a);
+}
+
+void
 lcppgl::Render::put_filled_rect(const lcppgl::tools::Rectangle & rect)
 {
 	SDL_RenderFillRect(_current_context.renderer(), (SDL_Rect *)&rect);
+}
+
+void
+lcppgl::Render::put_filled_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color)
+{
+	Uint8 r, g, b, a;
+
+	SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
+	set_draw_color(color);
+	SDL_RenderFillRect(_current_context.renderer(), (SDL_Rect *)&rect);
+	set_draw_color(r, g, b, a);
 }
 
 void
