@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 20:58:02 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/02 05:26:29 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/04 16:31:09 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,13 @@ lcppgl::tools::Color::operator+(const Color & color)
 	float	base_alpha = color._a / 255.0f;
 	float	inv_alpha = _a / 255.0f;
 	
+	// RGB = srcRGB * SDL_BLENDFACTOR_SRC_ALPHA + dstRGB * SDL_BLENDFACTOR_ONE
+	// A = srcA * SDL_BLENDFACTOR_ZERO + dstA * SDL_BLENDFACTOR_ONE
+
+	// _r = color._r * SDL_BLENDFACTOR_SRC_ALPHA + _r * SDL_BLENDFACTOR_ONE;
+	// _g = color._g * SDL_BLENDFACTOR_SRC_ALPHA + _g * SDL_BLENDFACTOR_ONE;
+	// _b = color._b * SDL_BLENDFACTOR_SRC_ALPHA + _b * SDL_BLENDFACTOR_ONE;
+	// _a = color._a * SDL_BLENDFACTOR_ZERO + _a * SDL_BLENDFACTOR_ONE;
 	_r = static_cast<Uint8>((color._r * base_alpha) + (_r * inv_alpha));
 	_g = static_cast<Uint8>((color._g * base_alpha) + (_g * inv_alpha));
 	_b = static_cast<Uint8>((color._b * base_alpha) + (_b * inv_alpha));
