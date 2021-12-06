@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/04 20:15:25 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/05 19:53:22 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/06 17:45:31 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,16 @@ namespace lcppgl
 
 			Writer &	operator=(const Writer &rhs);
 
-			void		write(const std::string &text,
+			void		put_text(const std::string &text,
 							const tools::Rectangle &rect,
 							const tools::Color &color);
-
+			void		put_text_and_bg(const std::string &text,
+							const tools::Rectangle &rect,
+							const tools::Color &color,
+							const tools::Color &bg_color);
+			void		put_pretty_text(const std::string &text,
+							const tools::Rectangle &rect,
+							const tools::Color &color);
 			void		change_font(const std::string &path, int size);
 	};
 }

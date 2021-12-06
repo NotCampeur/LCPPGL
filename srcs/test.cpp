@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/06 17:33:46 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/06 18:01:33 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,26 +80,34 @@ void	overlapping_rectangles(lcppgl::Context & context)
 	render.put_outlined_rect(lcppgl::tools::Rectangle(400, 200, 400, 200),
 		lcppgl::tools::Color(255, 255, 255, 255));
 		
-	writer.write("Actual", lcppgl::tools::Rectangle(150, 300, 100, 25),
+	writer.put_text("Actual", lcppgl::tools::Rectangle(150, 300, 100, 25),
 		lcppgl::tools::Color(0, 0, 0, 255));
-	writer.write("Expected", lcppgl::tools::Rectangle(550, 300, 100, 25),
+	writer.put_text("Expected", lcppgl::tools::Rectangle(550, 300, 100, 25),
 		lcppgl::tools::Color(0, 0, 0, 255));
 	render.present();
 }
 
 #include <sstream> // Needed since you can't use to_string() in C++98.
 // Put random text on the screen at rendom position to test text rendering.
-void	random_text_rendering(lcppgl::Context & context)
+// Put text on the screen in the three different ways.
+void	text_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
 	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS.ttf", 40);
 	context.set_fps_limit(2);
 	
 	render.clear();
+	writer.put_text("Hello World!", lcppgl::tools::Rectangle(20, 50, 480, 80),
+		lcppgl::tools::Color(255, 255, 255, 255));
+	writer.put_text_and_bg("Hello World!", lcppgl::tools::Rectangle(20, 150, 480, 80),
+		lcppgl::tools::Color(255, 255, 255, 255), lcppgl::tools::Color(100, 100, 100, 255));
+	writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
+		lcppgl::tools::Color(255, 255, 255, 255));
+
 	std::ostringstream nb;
 
 	nb << rand() % 100;
-	writer.write(nb.str(), lcppgl::tools::Rectangle(rand() % (context.width() - 40), rand() % (context.height() - 80) + 40, 40, 40),
+	writer.put_text(nb.str(), lcppgl::tools::Rectangle(rand() % (context.width() - 40), rand() % (context.height() - 80) + 40, 40, 40),
 		lcppgl::tools::Color(rand() % 255, rand() % 255, rand() % 255, 255));
 	render.present();
 }
@@ -110,7 +118,7 @@ int	main(void)
 	{
 		lcppgl::Context & main_context = lcppgl::Application::instance().create_context();
 		main_context.add_event_functor(exit_input);
-		main_context.add_render_functor(random_text_rendering);
+		main_context.add_render_functor(text_rendering);
 
 		lcppgl::Application::instance().run();
 	}

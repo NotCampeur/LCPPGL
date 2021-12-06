@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/05 17:14:24 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/05 19:54:02 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/06 17:56:29 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,32 @@ lcppgl::Writer::operator=(const Writer &other)
 }
 
 void
-lcppgl::Writer::write(const std::string &text, const tools::Rectangle &rect, const tools::Color &color)
+lcppgl::Writer::put_text(const std::string &text, const tools::Rectangle &rect, const tools::Color &color)
 {
 	SDL_Texture *	texture;
 
 	texture = create_texture(TTF_RenderUTF8_Solid(_font, text.c_str(), color));
+	render_texture(texture, NULL, (SDL_Rect *)&rect);
+	SDL_DestroyTexture(texture);
+}
+void
+lcppgl::Writer::put_text_and_bg(const std::string &text, const tools::Rectangle &rect,
+					const tools::Color &color, const tools::Color &bg_color)
+{
+	SDL_Texture *	texture;
+
+	texture = create_texture(TTF_RenderUTF8_Shaded(_font, text.c_str(), color, bg_color));
+	render_texture(texture, NULL, (SDL_Rect *)&rect);
+	SDL_DestroyTexture(texture);
+}
+
+void
+lcppgl::Writer::put_pretty_text(const std::string &text, const tools::Rectangle &rect,
+					const tools::Color &color)
+{
+	SDL_Texture *	texture;
+
+	texture = create_texture(TTF_RenderUTF8_Blended(_font, text.c_str(), color));
 	render_texture(texture, NULL, (SDL_Rect *)&rect);
 	SDL_DestroyTexture(texture);
 }
