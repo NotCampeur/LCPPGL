@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 20:58:02 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/04 16:31:09 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/05 20:35:18 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,37 +45,40 @@ lcppgl::tools::Color::operator=(const Color & color)
 	return (*this);
 }
 
-// Do an additive blending of the two colors
-lcppgl::tools::Color	&
-lcppgl::tools::Color::operator+(const Color & color)
+lcppgl::tools::Color
+lcppgl::tools::operator+(const Color & color_a, const Color & color_b)
 {
-	float	base_alpha = color._a / 255.0f;
-	float	inv_alpha = _a / 255.0f;
-	
 	// RGB = srcRGB * SDL_BLENDFACTOR_SRC_ALPHA + dstRGB * SDL_BLENDFACTOR_ONE
 	// A = srcA * SDL_BLENDFACTOR_ZERO + dstA * SDL_BLENDFACTOR_ONE
-
-	// _r = color._r * SDL_BLENDFACTOR_SRC_ALPHA + _r * SDL_BLENDFACTOR_ONE;
-	// _g = color._g * SDL_BLENDFACTOR_SRC_ALPHA + _g * SDL_BLENDFACTOR_ONE;
-	// _b = color._b * SDL_BLENDFACTOR_SRC_ALPHA + _b * SDL_BLENDFACTOR_ONE;
-	// _a = color._a * SDL_BLENDFACTOR_ZERO + _a * SDL_BLENDFACTOR_ONE;
-	_r = static_cast<Uint8>((color._r * base_alpha) + (_r * inv_alpha));
-	_g = static_cast<Uint8>((color._g * base_alpha) + (_g * inv_alpha));
-	_b = static_cast<Uint8>((color._b * base_alpha) + (_b * inv_alpha));
-	_a = color._a;
-	return (*this);
+	// lcppgl::tools::Color	result(color_b.r() * SDL_BLENDFACTOR_SRC_ALPHA + color_a.r() * SDL_BLENDFACTOR_ONE,
+	// 			  color_b.g() * SDL_BLENDFACTOR_SRC_ALPHA + color_a.g() * SDL_BLENDFACTOR_ONE,
+	// 			  color_b.b() * SDL_BLENDFACTOR_SRC_ALPHA + color_a.b() * SDL_BLENDFACTOR_ONE,
+	// 			  color_b.a() * SDL_BLENDFACTOR_ZERO + color_a.a() * SDL_BLENDFACTOR_ONE);
+	float	base_alpha = color_b.a() / 255.0f;
+	float	inv_alpha = color_a.a() / 255.0f;
+	// float   inv_alpha = 1.0f - base_alpha;
+	tools::Color	result(static_cast<Uint8>(color_b.r() * base_alpha + color_a.r() * inv_alpha),
+				  static_cast<Uint8>(color_b.g() * base_alpha + color_a.g() * inv_alpha),
+				  static_cast<Uint8>(color_b.b() * base_alpha + color_a.b() * inv_alpha),
+				  color_b.a());
+	
+	return result;
 }
 
-// Do a sort of substractive blending of the two colors
-lcppgl::tools::Color	&
-lcppgl::tools::Color::operator-(const Color & color)
+lcppgl::tools::Color
+lcppgl::tools::operator-(const Color & color_a, const Color & color_b)
 {
-	float	base_alpha = color._a / 255.0f;
-	
-	_r = ((color._r * base_alpha) >= _r) ? 0 : _r - (color._r * base_alpha);
-	_g = ((color._g * base_alpha) >= _g) ? 0 : _g - (color._g * base_alpha);
-	_b = ((color._b * base_alpha) >= _b) ? 0 : _b - (color._b * base_alpha);
-	return (*this);
+	// lcppgl::tools::Color	result(color_b.r() * SDL_BLENDFACTOR_SRC_ALPHA - color_a.r() * SDL_BLENDFACTOR_ONE,
+	// 			  color_b.g() * SDL_BLENDFACTOR_SRC_ALPHA - color_a.g() * SDL_BLENDFACTOR_ONE,
+	// 			  color_b.b() * SDL_BLENDFACTOR_SRC_ALPHA - color_a.b() * SDL_BLENDFACTOR_ONE,
+	// 			  color_b.a() * SDL_BLENDFACTOR_ZERO - color_a.a() * SDL_BLENDFACTOR_ONE);
+	float	base_alpha = color_b.a() / 255.0f;
+	float   inv_alpha = 1.0f - base_alpha;
+	tools::Color	result(static_cast<Uint8>(color_b.r() * base_alpha - color_a.r() * inv_alpha),
+				  static_cast<Uint8>(color_b.g() * base_alpha - color_a.g() * inv_alpha),
+				  static_cast<Uint8>(color_b.b() * base_alpha - color_a.b() * inv_alpha),
+				  color_b.a());
+	return result;
 }
 
 bool

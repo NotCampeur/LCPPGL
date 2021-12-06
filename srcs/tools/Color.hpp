@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 20:47:37 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/25 21:33:11 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/04 19:55:54 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ namespace lcppgl
 				~Color(void);
 
 				Color	& operator=(const Color & color);
-				Color 	& operator+(const Color & color);
-				Color 	& operator-(const Color & color);
 				bool	operator==(const Color & color);
 				bool	operator!=(const Color & color);
 				operator SDL_Color() const
@@ -59,6 +57,8 @@ namespace lcppgl
 				void	set_b(const Uint8 b);
 				void	set_a(const Uint8 a);
 		};
+		Color	operator+(const Color & color_a, const Color & color_b);
+		Color	operator-(const Color & color_a, const Color & color_b);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 17:51:32 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/25 20:32:24 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/05 20:26:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ namespace lcppgl
 
 			public:
 				Rectangle(int x = 0, int y = 0, int width = 0, int height = 0);
-				Rectangle(lcppgl::tools::Rectangle const & src);
+				Rectangle(Rectangle const & src);
 				~Rectangle(void);
 
-				lcppgl::tools::Rectangle &	operator=(lcppgl::tools::Rectangle const & rhs);
+				Rectangle &	operator=(Rectangle const & rhs);
 
 				operator SDL_Rect() const
 				{

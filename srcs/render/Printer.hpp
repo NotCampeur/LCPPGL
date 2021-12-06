@@ -33,10 +33,10 @@ namespace lcppgl
 			void	set_draw_color(const SDL_Color & color);
 			void	set_draw_color(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a);
 
-			void	put_outlined_rect(const lcppgl::tools::Rectangle & rect);
-			void	put_outlined_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color);
-			void	put_filled_rect(const lcppgl::tools::Rectangle & rect);
-			void	put_filled_rect(const lcppgl::tools::Rectangle & rect, const lcppgl::tools::Color & color);
+			void	put_outlined_rect(const tools::Rectangle & rect);
+			void	put_outlined_rect(const tools::Rectangle & rect, const tools::Color & color);
+			void	put_filled_rect(const tools::Rectangle & rect);
+			void	put_filled_rect(const tools::Rectangle & rect, const tools::Color & color);
 
 			void	clear(void);
 			void	present(void);
