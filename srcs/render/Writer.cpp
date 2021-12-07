@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/05 17:14:24 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/06 17:56:29 by ldutriez         ###   ########.fr       */
+/*   Updated: 2021/12/07 14:33:59 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,53 +54,26 @@ lcppgl::Writer::operator=(const Writer &other)
 void
 lcppgl::Writer::put_text(const std::string &text, const tools::Rectangle &rect, const tools::Color &color)
 {
-	SDL_Texture *	texture;
+	tools::Texture		texture(_context, TTF_RenderUTF8_Solid(_font, text.c_str(), color), true);	
 
-	texture = create_texture(TTF_RenderUTF8_Solid(_font, text.c_str(), color));
-	render_texture(texture, NULL, (SDL_Rect *)&rect);
-	SDL_DestroyTexture(texture);
+	texture.render(NULL, &rect);
 }
 void
 lcppgl::Writer::put_text_and_bg(const std::string &text, const tools::Rectangle &rect,
 					const tools::Color &color, const tools::Color &bg_color)
 {
-	SDL_Texture *	texture;
+	tools::Texture		texture(_context, TTF_RenderUTF8_Shaded(_font, text.c_str(), color, bg_color), true);	
 
-	texture = create_texture(TTF_RenderUTF8_Shaded(_font, text.c_str(), color, bg_color));
-	render_texture(texture, NULL, (SDL_Rect *)&rect);
-	SDL_DestroyTexture(texture);
+	texture.render(NULL, &rect);
 }
 
 void
 lcppgl::Writer::put_pretty_text(const std::string &text, const tools::Rectangle &rect,
 					const tools::Color &color)
 {
-	SDL_Texture *	texture;
+	tools::Texture		texture(_context, TTF_RenderUTF8_Blended(_font, text.c_str(), color), true);	
 
-	texture = create_texture(TTF_RenderUTF8_Blended(_font, text.c_str(), color));
-	render_texture(texture, NULL, (SDL_Rect *)&rect);
-	SDL_DestroyTexture(texture);
-}
-
-SDL_Texture	*
-lcppgl::Writer::create_texture(SDL_Surface *surface)
-{
-	SDL_Texture	*result;
-
-	if(surface == NULL)
-		throw std::runtime_error(std::string("TTF_RenderUTF8_Solid: ") + TTF_GetError());
-	result = SDL_CreateTextureFromSurface(_context.renderer(), surface);
-	if (result == NULL)
-		throw std::runtime_error(std::string("SDL_CreateTextureFromSurface: ") + SDL_GetError());
-	SDL_FreeSurface(surface);
-	return result;
-}
-
-void
-lcppgl::Writer::render_texture(SDL_Texture *tex, const SDL_Rect *src, const SDL_Rect *dst)
-{
-	if (SDL_RenderCopy(_context.renderer(), tex, src, dst) == -1)
-		throw std::runtime_error(std::string("SDL_RenderCopy: ") + SDL_GetError());
+	texture.render(NULL, &rect);
 }
 
 void

@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2021/12/05 18:21:22 by ldutriez         ###   ########.fr        #
+#    Updated: 2021/12/07 14:17:01 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ SRC 	=		test.cpp \
 				\
 				Printer.cpp Writer.cpp\
 				\
-				Rectangle.cpp Color.cpp
+				Rectangle.cpp Color.cpp Texture.cpp
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
