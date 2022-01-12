@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/06 18:01:33 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/01/12 15:38:20 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	random_rectangle(lcppgl::Context & context)
 void	overlapping_rectangles(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
-	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS.ttf", 25);
+	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 25);
 	lcppgl::tools::Color red;
 	lcppgl::tools::Color green;
 	
@@ -93,7 +93,7 @@ void	overlapping_rectangles(lcppgl::Context & context)
 void	text_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
-	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS.ttf", 40);
+	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 40);
 	context.set_fps_limit(2);
 	
 	render.clear();

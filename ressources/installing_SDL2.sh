@@ -308,7 +308,7 @@ function brewInstall()
 		if [ $IS_ERROR -eq 0 ]; then
 			brewSDL2_image
 			brewSDL2_ttf
-			brewSDL2_mixer
+			# brewSDL2_mixer SDL2_mixer seems to have some troubles.
 			brewSDL2_net
 			brewSDL2_gfx
 		fi
