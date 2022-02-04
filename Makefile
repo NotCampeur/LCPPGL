@@ -6,11 +6,11 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2021/12/07 14:17:01 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/02/04 18:19:50 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=		lcppgl
+NAME	=		liblcppgl
 
 CC 		=		clang++
 

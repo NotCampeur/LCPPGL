@@ -1,4 +1,4 @@
-lcppgl
-lcppgl.a
+liblcppgl
+liblcppgl.a
 objs/
 ressources/great.png
