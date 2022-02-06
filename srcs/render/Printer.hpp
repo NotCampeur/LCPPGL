@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LCPPGL_Printer_HPP
-# define LCPPGL_Printer_HPP
+#ifndef LCPPGL_PRINTER_HPP
+# define LCPPGL_PRINTER_HPP
 
 # include "lcppgl.hpp"
 
@@ -38,6 +38,9 @@ namespace lcppgl
 			void	put_filled_rect(const tools::Rectangle & rect);
 			void	put_filled_rect(const tools::Rectangle & rect, const tools::Color & color);
 
+			void	put_line(const tools::Point & p1, const tools::Point & p2);
+			void	put_line(const tools::Point & p1, const tools::Point & p2, const tools::Color & color);
+			
 			void	clear(void);
 			void	present(void);
 	};

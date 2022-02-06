@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 21:20:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/07 14:10:49 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/02/06 03:31:37 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,6 @@
 # include "Rectangle.hpp"
 # include "Color.hpp"
 # include "Texture.hpp"
+# include "Point.hpp"
 
 #endif
