@@ -27,9 +27,9 @@ SRC 	=		test.cpp \
 				Application.cpp \
 				Context.cpp \
 				\
-				Printer.cpp Writer.cpp\
+				Rectangle.cpp Color.cpp Texture.cpp \
 				\
-				Rectangle.cpp Color.cpp Texture.cpp
+				Printer.cpp #Writer.cpp
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
@@ -70,7 +70,8 @@ $(SDL):
 
 test:			$(NAME).a
 				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) ... \c"
-				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
+				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` $< -o $(NAME)
+				@# @$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
 				@./$(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 

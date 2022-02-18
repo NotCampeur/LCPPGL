@@ -17,10 +17,10 @@ lcppgl::Application::Application(void) : lcppgl::Singleton()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::invalid_argument(SDL_GetError());
-	if (TTF_Init() == -1)
-		throw std::invalid_argument(TTF_GetError());
-	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == 0)
-		throw std::invalid_argument(IMG_GetError());
+	// if (TTF_Init() == -1)
+		// throw std::invalid_argument(TTF_GetError());
+	// if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == 0)
+		// throw std::invalid_argument(IMG_GetError());
 }
 
 lcppgl::Application::~Application(void)
@@ -28,8 +28,8 @@ lcppgl::Application::~Application(void)
 	for (size_t i = 0; i < _context.size(); i++)
 		delete _context[i];
 	_context.clear();
-	TTF_Quit();
-	IMG_Quit();
+	// TTF_Quit();
+	// IMG_Quit();
 	SDL_Quit();
 }
 

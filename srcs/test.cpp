@@ -58,7 +58,7 @@ void	random_rectangle(lcppgl::Context & context)
 void	overlapping_rectangles(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
-	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 25);
+	// lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 25);
 	lcppgl::tools::Color red;
 	lcppgl::tools::Color green;
 	
@@ -80,10 +80,10 @@ void	overlapping_rectangles(lcppgl::Context & context)
 	render.put_outlined_rect(lcppgl::tools::Rectangle(400, 200, 400, 200),
 		lcppgl::tools::Color(255, 255, 255, 255));
 		
-	writer.put_text("Actual", lcppgl::tools::Rectangle(150, 300, 100, 25),
-		lcppgl::tools::Color(0, 0, 0, 255));
-	writer.put_text("Expected", lcppgl::tools::Rectangle(550, 300, 100, 25),
-		lcppgl::tools::Color(0, 0, 0, 255));
+	// writer.put_text("Actual", lcppgl::tools::Rectangle(150, 300, 100, 25),
+		// lcppgl::tools::Color(0, 0, 0, 255));
+	// writer.put_text("Expected", lcppgl::tools::Rectangle(550, 300, 100, 25),
+		// lcppgl::tools::Color(0, 0, 0, 255));
 	render.present();
 }
 
@@ -93,22 +93,22 @@ void	overlapping_rectangles(lcppgl::Context & context)
 void	text_rendering(lcppgl::Context & context)
 {
 	lcppgl::Printer render(context);
-	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 40);
+	// lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 40);
 	context.set_fps_limit(2);
 	
 	render.clear();
-	writer.put_text("Hello World!", lcppgl::tools::Rectangle(20, 50, 480, 80),
-		lcppgl::tools::Color(255, 255, 255, 255));
-	writer.put_text_and_bg("Hello World!", lcppgl::tools::Rectangle(20, 150, 480, 80),
-		lcppgl::tools::Color(255, 255, 255, 255), lcppgl::tools::Color(100, 100, 100, 255));
-	writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
-		lcppgl::tools::Color(255, 255, 255, 255));
+	// writer.put_text("Hello World!", lcppgl::tools::Rectangle(20, 50, 480, 80),
+		// lcppgl::tools::Color(255, 255, 255, 255));
+	// writer.put_text_and_bg("Hello World!", lcppgl::tools::Rectangle(20, 150, 480, 80),
+		// lcppgl::tools::Color(255, 255, 255, 255), lcppgl::tools::Color(100, 100, 100, 255));
+	// writer.put_pretty_text("Hello World!", lcppgl::tools::Rectangle(20, 250, 480, 80),
+		// lcppgl::tools::Color(255, 255, 255, 255));
 
 	std::ostringstream nb;
 
 	nb << rand() % 100;
-	writer.put_text(nb.str(), lcppgl::tools::Rectangle(rand() % (context.width() - 40), rand() % (context.height() - 80) + 40, 40, 40),
-		lcppgl::tools::Color(rand() % 255, rand() % 255, rand() % 255, 255));
+	// writer.put_text(nb.str(), lcppgl::tools::Rectangle(rand() % (context.width() - 40), rand() % (context.height() - 80) + 40, 40, 40),
+		// lcppgl::tools::Color(rand() % 255, rand() % 255, rand() % 255, 255));
 	render.present();
 }
 
@@ -118,7 +118,7 @@ int	main(void)
 	{
 		lcppgl::Context & main_context = lcppgl::Application::instance().create_context();
 		main_context.add_event_functor(exit_input);
-		main_context.add_render_functor(text_rendering);
+		main_context.add_render_functor(overlapping_rectangles);
 
 		lcppgl::Application::instance().run();
 	}

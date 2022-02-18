@@ -15,6 +15,7 @@
 
 # include "lcppgl.hpp"
 
+# ifdef TTF_IS_INSTALLED
 namespace lcppgl {namespace tools {class Rectangle;class Color;}}
 
 namespace lcppgl
@@ -47,5 +48,5 @@ namespace lcppgl
 			void		change_font(const std::string &path, int size);
 	};
 }
-
+# endif
 #endif
