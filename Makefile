@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/02/04 18:19:50 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/03/03 23:09:27 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,14 +37,35 @@ OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 CFLAGS	=		-Wall -Wextra -Werror -std=c++98 -g3
 
 DEBUG =
-ifdef DEBUG
-    CFLAGS += -fsanitize=address
+# Add fsanitize to the compilation flags if DEBUG is set to fs.
+# If DEBUG is set to valgrind, add debug flags to the compilation flags.
+ifeq ($(DEBUG), fs)
+	CFLAGS += -fsanitize=address
+	CFLAGS += -g3
+	CFLAGS += -O0
+	msg = $(shell echo "$(_PURPLE)fsanitize and debug flags are added.$(_WHITE)")
+	useless := $(info $(msg))
+else ifeq ($(DEBUG), vl)
+	CFLAGS += -g3
+	CFLAGS += -O0
+	msg = $(shell echo "$(_PURPLE)Valgrind and debug flags are added. Take care to rebuild the program entirely if you already used valgrind.$(_WHITE)")
+	useless := $(info $(msg))
+else ifeq ($(DEBUG), gdb)
+	CFLAGS += -g3
+	CFLAGS += -O0
+	msg = $(shell echo "$(_PURPLE)gdb and debug flags are added.$(_WHITE)")
+	useless := $(info $(msg))
+else
+	CFLAGS += -O3
+	msg = $(shell echo "$(_PURPLE)Debug mode not enabled. Optimization flags are added.$(_WHITE)")
+	useless := $(info $(msg))
 endif
 
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
 
-SDL = ./ressources/great.png
+# SDL = ./ressources/great.png
+SDL = ./Makefile
 
 # Colors
 
@@ -72,7 +93,13 @@ test:			$(NAME).a
 				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) ... \c"
 				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` $< -o $(NAME)
 				@# @$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
-				@./$(NAME)
+				@if [ "$(DEBUG)" = "vl" ]; then \
+					valgrind --leak-check=full --show-leak-kinds=all ./$<; \
+				elif [ "$(DEBUG)" = "gdb" ]; then \
+					gdb -tui ./$<; \
+				else \
+					./$<; \
+				fi
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 show:
