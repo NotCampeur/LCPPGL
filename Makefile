@@ -6,13 +6,13 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/02/04 18:19:50 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/07/19 08:40:06 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	=		liblcppgl
 
-CC 		=		clang++
+CC 		=		c++
 
 SRC_DIR = 		$(shell find srcs -type d)
 INC_DIR = 		$(shell find includes -type d) \
