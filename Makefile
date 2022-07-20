@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/07/19 08:40:06 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/07/20 15:02:35 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,17 +22,18 @@ OBJ_DIR = 		objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-SRC 	=		test.cpp \
-				\
-				Application.cpp \
+SRC 	=		Application.cpp \
 				Context.cpp \
 				\
-				Printer.cpp Writer.cpp\
+				Printer.cpp Writer.cpp \
 				\
 				Rectangle.cpp Color.cpp Texture.cpp
 
-OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
+TEST_SRC =		test.cpp \
+				${SRC}
 
+OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
+TEST_OBJ = 		$(addprefix $(OBJ_DIR)/, $(TEST_SRC:%.cpp=%.o))
 #Compilation flag
 CFLAGS	=		-Wall -Wextra -Werror -std=c++98 -g3
 
@@ -68,9 +69,9 @@ $(NAME).a:		$(OBJ) Makefile
 $(SDL):
 				@./ressources/installing_SDL2.sh
 
-test:			$(NAME).a
+test:			$(NAME).a $(TEST_OBJ)
 				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) ... \c"
-				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
+				$(CC) $(CFLAGS) $(IFLAGS) $(TEST_OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
 				@./$(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
