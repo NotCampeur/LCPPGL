@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/10 13:30:44 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/13 17:24:52 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,13 +29,13 @@ SRC 	=		Application.cpp \
 				\
 				Rectangle.cpp Color.cpp Texture.cpp
 
-TEST_SRC =		test.cpp \
+TEST_SRC =		test.cpp 3dtest.cpp \
 				${SRC}
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 TEST_OBJ = 		$(addprefix $(OBJ_DIR)/, $(TEST_SRC:%.cpp=%.o))
 #Compilation flag
-CFLAGS	=		-Wall -Wextra -Werror -std=c++98 -g3
+CFLAGS	=		-Wall -Wextra -Werror -g3
 
 DEBUG =
 ifdef DEBUG

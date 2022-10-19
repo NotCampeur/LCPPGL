@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:00:58 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/12/05 18:35:47 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/11 13:32:33 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "SDL.h"
 # include "SDL_ttf.h"
 # include "SDL_image.h"
+# include "SDL_audio.h"
 
 # include "Application.hpp"
 # include "Context.hpp"

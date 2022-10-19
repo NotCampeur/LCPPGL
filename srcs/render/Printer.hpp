@@ -38,6 +38,27 @@ namespace lcppgl
 			void	put_filled_rect(const tools::Rectangle & rect);
 			void	put_filled_rect(const tools::Rectangle & rect, const tools::Color & color);
 
+			/**
+			 * @brief Put a line in the linked context.
+			 * 
+			 * @param points A tools::Rectangle storing x1,y1 and x2,y2.
+			 */
+			void	put_line(const tools::Rectangle & points);
+
+			/**
+			 * @brief Put a line in the linked context.
+			 * 
+			 * @param points A tools::Rectangle storing x1,y1 and x2,y2.
+			 * @param color The color to draw the line with.
+			 */
+			void	put_line(const tools::Rectangle & points,
+								const tools::Color & color);
+
+			//TODO : Do a Triangle class.
+			void	put_triangle(int x1, int y1, int x2, int y2, int x3, int y3);
+			void	put_triangle(int x1, int y1, int x2, int y2, int x3, int y3,
+									const tools::Color & color);
+
 			void	clear(void);
 			void	present(void);
 	};
