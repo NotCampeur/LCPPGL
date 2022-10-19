@@ -101,11 +101,47 @@ struct Mesh
 	: name(_name), vertices(new Vector3[vertices_count]), vertices_nb(vertices_count)
 	{}
 
+	Mesh(const Mesh & to_copy)
+	: name(to_copy.name + "_copy")
+	, vertices(new Vector3[to_copy.vertices_nb]), vertices_nb(to_copy.vertices_nb)
+	, pos(to_copy.pos), rotation(to_copy.rotation)
+	{
+		for (int i(0); i < vertices_nb; ++i)
+			vertices[i] = to_copy.vertices[i];
+	}
+
+	Mesh &operator = (const Mesh & to_assign)
+	{
+		if (this != &to_assign)
+		{
+			name = to_assign.name + "_copy";
+			delete [] vertices;
+			vertices = new Vector3[to_assign.vertices_nb];
+			vertices_nb = to_assign.vertices_nb;
+			for (int i(0); i < vertices_nb; ++i)
+				vertices[i] = to_assign.vertices[i];
+			pos = to_assign.pos;
+			rotation = to_assign.rotation;
+		}
+		return *this;
+	}
+
 	~Mesh()
 	{
 		delete[] vertices;
 	}
 };
+
+std::ostream & operator << (std::ostream & os, const Mesh & to_print)
+{
+	os << to_print.name << " has " << to_print.vertices_nb << " vertices :\n";
+	for (int i(0); i < to_print.vertices_nb; ++i)
+		os << i << " : " << to_print.vertices[i] << '\n';
+	os << to_print.name << " position is : " << to_print.pos << "\n"
+		 << to_print.name << " rotation is : " << to_print.pos;
+
+	return os;
+}
 
 /**
  * @brief A 4 by 4 matrix.
@@ -349,7 +385,7 @@ Vector3	project(const lcppgl::Context &context,
 	return td_point;
 }
 
-void	render(lcppgl::Context &context, Camera &cam, Mesh &mesh)//List of mesh in futur
+void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//List of mesh in futur
 {
 	lcppgl::Printer printer(context);
 
@@ -364,41 +400,43 @@ void	render(lcppgl::Context &context, Camera &cam, Mesh &mesh)//List of mesh in 
 		1.0f, 0.01f));
 
 	// std::cout << "projection matrix :\n" << projection << '\n';
-
-	//3 world matrix on each mesh
-	Matrix	world;
-	Matrix rotation;
-	Matrix translation;
-
-	rotation.set_to_rotate(mesh.rotation.x, mesh.rotation.y, mesh.rotation.z);
-	translation.set_to_translate(mesh.pos.x, mesh.pos.y, mesh.pos.z);
-
-	// std::cout << "rotation matrix :\n" << rotation << '\n';
-	// std::cout << "translation matrix :\n" << translation << '\n';
-
-	world = rotation * translation;
-	// std::cout << "world matrix :\n" << world << '\n';
-
-	//4 the final transform matrix :
-	Matrix transform;
-	transform = world * view * projection;
-	
 	printer.clear();
 
-	//5 For each vertices :
-	// std::cout << "Transform matrix :\n" << transform << '\n';
-	for (int i(0); i < mesh.vertices_nb; ++i)
+	for (int i(0); i < mesh_nb; ++i)
 	{
-		lcppgl::tools::Color color;
-		if (i % 2 == 0)
-			color = lcppgl::tools::Color(0, i * 28 + 58, 0, 255);
-		else if (i % 3 == 0)
-			color = lcppgl::tools::Color(i * 28 + 58, 0, 0, 255);
-		else
-			color = lcppgl::tools::Color(0, 0, i * 28 + 58, 255);
-		Vector3 td_vertex = project(context, mesh.vertices[i], transform);
-		//6 Draw of 2DVertex;
-		printer.put_filled_rect(lcppgl::tools::Rectangle(td_vertex.x, td_vertex.y, 10, 10), color);
+		//3 world matrix on each mesh
+		Matrix	world;
+		Matrix	rotation;
+		Matrix	translation;
+
+		rotation.set_to_rotate(mesh[i].rotation.x, mesh[i].rotation.y, mesh[i].rotation.z);
+		translation.set_to_translate(mesh[i].pos.x, mesh[i].pos.y, mesh[i].pos.z);
+
+		// std::cout << "rotation matrix :\n" << rotation << '\n';
+		// std::cout << "translation matrix :\n" << translation << '\n';
+
+		world = rotation * translation;
+		// std::cout << "world matrix :\n" << world << '\n';
+
+		//4 the final transform matrix :
+		Matrix transform;
+		transform = world * view * projection;
+		
+		//5 For each vertices :
+		// std::cout << "Transform matrix :\n" << transform << '\n';
+		for (int v(0); v < mesh[i].vertices_nb; ++v)
+		{
+			lcppgl::tools::Color color;
+			if (v % 2 == 0)
+				color = lcppgl::tools::Color(100, v * 28 + 58, 0, 255);
+			else if (v % 3 == 0)
+				color = lcppgl::tools::Color(v * 28 + 58, 0, 0, 255);
+			else
+				color = lcppgl::tools::Color(0, 0, v * 28 + 58, 255);
+			Vector3 td_vertex = project(context, mesh[i].vertices[v], transform);
+			//6 Draw of 2DVertex;
+			printer.put_filled_rect(lcppgl::tools::Rectangle(td_vertex.x, td_vertex.y, 10, 10), color);
+		}
 	}
 
 	// std::cout << "\n\n";
@@ -415,9 +453,8 @@ void	draw_cube(lcppgl::Context &context)
 		cam.target = Vector3(0, 0, 0.0f);
 	}
 
-	static Mesh	cube = Mesh("Cube", 8);
-
-	if (cube.pos.x == 0.0f)
+	static Mesh	cube = Mesh("CubeA", 8);
+	if (cube.vertices[0].x == 0.0f)
 	{
 		cube.pos = Vector3(0, 0, 0.0f);
 		cube.vertices[0] = Vector3(-1.0f, 1.0f, 1.0f);
@@ -430,11 +467,28 @@ void	draw_cube(lcppgl::Context &context)
 		cube.vertices[7] = Vector3(1.0f, -1.0f, -1.0f);
 	}
 
+	static Mesh	pyramid = Mesh("PyramidA", 5);
+	if (pyramid.vertices[0].x == 0.0f)
+	{
+		pyramid.pos = Vector3(5, 0, 0.0f);
+		pyramid.vertices[0] = Vector3(0.0f, 1.0f, 0.0f);
+		pyramid.vertices[1] = Vector3(1.0f, -1.0f, 1.0f);
+		pyramid.vertices[2] = Vector3(1.0f, -1.0f, -1.0f);
+		pyramid.vertices[3] = Vector3(-1.0f, -1.0f, -1.0f);
+		pyramid.vertices[4] = Vector3(-1.0f, -1.0f, 1.0f);
+	}
+
+	// std::cout << cube << '\n';
+	Mesh meshes[2] = {cube, pyramid};
+	// std::cout << meshes[0] << '\n';
+
 	context.set_fps_limit(0);
 	
-	render(context, cam, cube);
+	render(context, cam, meshes, 2);
 
 	// cube.rotation.x += 1.0f;
 	cube.rotation.y += 1.0f;
 	// cube.rotation.z += 1.0f;
+	// pyramid.rotation.x += 1.0f;
+	pyramid.rotation.y -= 1.0f;
 }
