@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/19 13:42:51 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/20 15:26:35 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,52 +219,50 @@ void	draw_triangle(lcppgl::Context &context)
 	SDL_PauseAudioDevice(id, true);
 }
 
-void	draw_lines(lcppgl::Context &context)
+void	draw_graph(lcppgl::Context &context)
 {
 	lcppgl::Printer printer(context);
+	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 80);
 
-	static lcppgl::tools::Rectangle line;
-	static bool drawing(false);
+	static lcppgl::tools::Rectangle v_line(context.width() / 10, context.height() / 10,
+		context.width() / 10, context.height() - context.height() / 10);
+	static lcppgl::tools::Rectangle h_line(v_line.x(), v_line.height(),
+		context.width() - v_line.x(), v_line.height());
+	static lcppgl::tools::Color white(255, 255, 255, 255);
 	
-	SDL_Event event;
+	context.set_fps_limit(0);
 	printer.clear();
 
+	printer.put_line(v_line, white);
+	printer.put_line(h_line, white);
+
+	// x = 2^n;
+	writer.put_pretty_text("f(2^n) = x",
+		lcppgl::tools::Rectangle(context.width() * 0.5f - 90, v_line.y(), 180, 30),
+		white);
+	writer.put_pretty_text("x",
+		lcppgl::tools::Rectangle(v_line.x() - 30, v_line.y() - 30 , 20, 30),
+		white);
+	writer.put_pretty_text("n",
+		lcppgl::tools::Rectangle(h_line.width() + 20, h_line.y() + 15, 20, 30),
+		white);
+		
+	int x(0);
+	for (int i(0); i < 8; ++i)
 	{
-		SDL_PollEvent(&event);
-		switch (event.type)
-		{
-			case SDL_QUIT:
-				context.stop();
-				return;
-				break;
-			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_ESCAPE)
-				{
-					context.remove_render_functor(0);
-					lcppgl::Application::instance().stop();
-					return;
-				}
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				if (event.button.button == SDL_BUTTON_LEFT)
-				{
-					line.reset(event.motion.x, event.motion.y,
-								event.motion.x, event.motion.y);
-					drawing = true;
-				}
-				break;
-			case SDL_MOUSEBUTTONUP:
-				if (event.button.button == SDL_BUTTON_LEFT)
-					drawing = false;
-				break;
-			case SDL_MOUSEMOTION:
-				if (drawing)
-					line.resize(event.motion.x, event.motion.y);
-				break;
-		}
-		printer.put_line(line, lcppgl::tools::Color(0, 255, 0, 255));
-		printer.present();
+		lcppgl::tools::Color current_color(35 * i, 255 / (i + 1), 35 * i, 255);
+
+		x = pow(2, i);
+		lcppgl::tools::Rectangle point(v_line.x() + x * 11, h_line.y() - i * 110 - 10,
+										5, 5);
+		printer.put_filled_rect(point, current_color);
+
+		writer.put_text(std::to_string(i), lcppgl::tools::Rectangle(point.x() - 10, h_line.y() + 3, 20, 20),
+					current_color);
+		writer.put_text(std::to_string(x), lcppgl::tools::Rectangle(v_line.x() - 30, point.y() - 10, 20, 20),
+					current_color);
 	}
+	printer.present();
 }
 
 void	draw_cube(lcppgl::Context &);
@@ -280,7 +278,7 @@ void	choose_the_test(lcppgl::Context &context)
 							"3. image rendering",
 							"4. grid rendering",
 							"5. Sierpinski Triangle",
-							"6. Draw Lines(Deactivated for now)",
+							"6. Draw graph",
 							"7. Cube"};
 	render.clear();
 	for (int i(0); i < size; ++i)
@@ -316,11 +314,7 @@ void	choose_the_test(lcppgl::Context &context)
 				else if (event.key.keysym.sym == SDLK_KP_5 || event.key.keysym.sym == SDLK_5)
 					context.add_render_functor(draw_triangle);
 				else if (event.key.keysym.sym == SDLK_KP_6 || event.key.keysym.sym == SDLK_6)
-				{
-					choosen = false;
-					break;
-					context.add_render_functor(draw_lines);
-				}
+					context.add_render_functor(draw_graph);
 				else if (event.key.keysym.sym == SDLK_KP_7 || event.key.keysym.sym == SDLK_7)
 					context.add_render_functor(draw_cube);
 				else
