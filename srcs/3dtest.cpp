@@ -89,25 +89,58 @@ struct Camera
 	Vector3	target;
 };
 
+struct Face
+{
+	int a;
+	int b;
+	int c;
+
+	Face(int _a = 0, int _b = 0, int _c = 0) : a(_a), b(_b), c(_c)
+	{}
+
+	Face(const Face & to_copy) : a(to_copy.a), b(to_copy.b), c(to_copy.c)
+	{}
+
+	Face & operator = (const Face & to_assign)
+	{
+		if (this != &to_assign)
+		{
+			a = to_assign.a;
+			b = to_assign.b;
+			c = to_assign.c;
+		}
+		return *this;
+	}
+
+	~Face()
+	{}
+};
+
 struct Mesh
 {
 	std::string name;
 	Vector3		*vertices;
 	int			vertices_nb;
+	Face		*faces;
+	int			faces_nb;
 	Vector3		pos;
 	Vector3		rotation;
 
-	Mesh(std::string _name, int vertices_count)
+	Mesh(std::string _name, int vertices_count, int faces_count)
 	: name(_name), vertices(new Vector3[vertices_count]), vertices_nb(vertices_count)
+	, faces(new Face[faces_count]), faces_nb(faces_count)
 	{}
 
 	Mesh(const Mesh & to_copy)
 	: name(to_copy.name + "_copy")
 	, vertices(new Vector3[to_copy.vertices_nb]), vertices_nb(to_copy.vertices_nb)
+	, faces(new Face[to_copy.faces_nb]), faces_nb(to_copy.faces_nb)
 	, pos(to_copy.pos), rotation(to_copy.rotation)
 	{
 		for (int i(0); i < vertices_nb; ++i)
 			vertices[i] = to_copy.vertices[i];
+		for (int i(0); i < faces_nb; ++i)
+			faces[i] = to_copy.faces[i];
 	}
 
 	Mesh &operator = (const Mesh & to_assign)
@@ -120,6 +153,11 @@ struct Mesh
 			vertices_nb = to_assign.vertices_nb;
 			for (int i(0); i < vertices_nb; ++i)
 				vertices[i] = to_assign.vertices[i];
+			delete [] faces;
+			faces = new Face[to_assign.faces_nb];
+			faces_nb = to_assign.faces_nb;
+			for (int i(0); i < faces_nb; ++i)
+				faces[i] = to_assign.faces[i];
 			pos = to_assign.pos;
 			rotation = to_assign.rotation;
 		}
@@ -129,6 +167,7 @@ struct Mesh
 	~Mesh()
 	{
 		delete[] vertices;
+		delete[] faces;
 	}
 };
 
@@ -422,20 +461,21 @@ void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//Li
 		Matrix transform;
 		transform = world * view * projection;
 		
-		//5 For each vertices :
+		//5 For each faces :
 		// std::cout << "Transform matrix :\n" << transform << '\n';
-		for (int v(0); v < mesh[i].vertices_nb; ++v)
+		for (int f(0); f < mesh[i].faces_nb; ++f)
 		{
-			lcppgl::tools::Color color;
-			if (v % 2 == 0)
-				color = lcppgl::tools::Color(100, v * 28 + 58, 0, 255);
-			else if (v % 3 == 0)
-				color = lcppgl::tools::Color(v * 28 + 58, 0, 0, 255);
-			else
-				color = lcppgl::tools::Color(0, 0, v * 28 + 58, 255);
-			Vector3 td_vertex = project(context, mesh[i].vertices[v], transform);
+			lcppgl::tools::Color white(255, 255, 255, 255);
+			Vector3 vertex_a = mesh[i].vertices[mesh[i].faces[f].a];
+			Vector3 vertex_b = mesh[i].vertices[mesh[i].faces[f].b];
+			Vector3 vertex_c = mesh[i].vertices[mesh[i].faces[f].c];
+
+			Vector3 pixel_a = project(context, vertex_a, transform);
+			Vector3 pixel_b = project(context, vertex_b, transform);
+			Vector3 pixel_c = project(context, vertex_c, transform);
 			//6 Draw of 2DVertex;
-			printer.put_filled_rect(lcppgl::tools::Rectangle(td_vertex.x, td_vertex.y, 10, 10), color);
+			printer.put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
+								pixel_c.x, pixel_c.y, white);
 		}
 	}
 
@@ -453,29 +493,51 @@ void	draw_cube(lcppgl::Context &context)
 		cam.target = Vector3(0, 0, 0.0f);
 	}
 
-	static Mesh	cube = Mesh("CubeA", 8);
+	static Mesh	cube = Mesh("CubeA", 8, 12);
 	if (cube.vertices[0].x == 0.0f)
 	{
 		cube.pos = Vector3(0, 0, 0.0f);
-		cube.vertices[0] = Vector3(-1.0f, 1.0f, 1.0f);
-		cube.vertices[1] = Vector3(1.0f, 1.0f, 1.0f);
-		cube.vertices[2] = Vector3(-1.0f, -1.0f, 1.0f);
-		cube.vertices[3] = Vector3(-1.0f, -1.0f, -1.0f);
-		cube.vertices[4] = Vector3(-1.0f, 1.0f, -1.0f);
-		cube.vertices[5] = Vector3(1.0f, 1.0f, -1.0f);
-		cube.vertices[6] = Vector3(1.0f, -1.0f, 1.0f);
-		cube.vertices[7] = Vector3(1.0f, -1.0f, -1.0f);
+
+		cube.vertices[0] = Vector3(-1, 1, 1);
+		cube.vertices[1] = Vector3(1, 1, 1);
+		cube.vertices[2] = Vector3(-1, -1, 1);
+		cube.vertices[3] = Vector3(1, -1, 1);
+		cube.vertices[4] = Vector3(-1, 1, -1);
+		cube.vertices[5] = Vector3(1, 1, -1);
+		cube.vertices[6] = Vector3(1, -1, -1);
+		cube.vertices[7] = Vector3(-1, -1, -1);
+
+		cube.faces[0] = Face(0, 1, 2);
+		cube.faces[1] = Face(1, 2, 3);
+		cube.faces[2] = Face(1, 3, 6);
+		cube.faces[3] = Face(1, 5, 6);
+		cube.faces[4] = Face(0, 1, 4);
+		cube.faces[5] = Face(1, 4, 5);
+		cube.faces[6] = Face(2, 3, 7);
+		cube.faces[7] = Face(3, 6, 7);
+		cube.faces[8] = Face(0, 2, 7);
+		cube.faces[9] = Face(0, 4, 7);
+		cube.faces[10] = Face(4, 5, 6);
+		cube.faces[11] = Face(4, 6, 7);
 	}
 
-	static Mesh	pyramid = Mesh("PyramidA", 5);
+	static Mesh	pyramid = Mesh("PyramidA", 5, 6);
 	if (pyramid.vertices[0].x == 0.0f)
 	{
 		pyramid.pos = Vector3(5, 0, 0.0f);
-		pyramid.vertices[0] = Vector3(0.0f, 1.0f, 0.0f);
-		pyramid.vertices[1] = Vector3(1.0f, -1.0f, 1.0f);
-		pyramid.vertices[2] = Vector3(1.0f, -1.0f, -1.0f);
-		pyramid.vertices[3] = Vector3(-1.0f, -1.0f, -1.0f);
-		pyramid.vertices[4] = Vector3(-1.0f, -1.0f, 1.0f);
+
+		pyramid.vertices[0] = Vector3(0, 1, 0);
+		pyramid.vertices[1] = Vector3(1, -1, 1);
+		pyramid.vertices[2] = Vector3(1, -1, -1);
+		pyramid.vertices[3] = Vector3(-1, -1, -1);
+		pyramid.vertices[4] = Vector3(-1, -1, 1);
+
+		pyramid.faces[0] = Face(1, 2, 3);
+		pyramid.faces[1] = Face(2, 3, 4);
+		pyramid.faces[2] = Face(1, 2, 0);
+		pyramid.faces[3] = Face(2, 3, 0);
+		pyramid.faces[4] = Face(3, 4, 0);
+		pyramid.faces[5] = Face(4, 1, 0);
 	}
 
 	// std::cout << cube << '\n';
