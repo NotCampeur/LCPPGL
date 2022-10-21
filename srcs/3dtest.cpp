@@ -1,5 +1,6 @@
 #include "lcppgl.hpp"
 #include <cmath>
+#include <vector>
 
 float	to_radian(int degree)
 {
@@ -118,29 +119,25 @@ struct Face
 
 struct Mesh
 {
-	std::string name;
-	Vector3		*vertices;
-	int			vertices_nb;
-	Face		*faces;
-	int			faces_nb;
-	Vector3		pos;
-	Vector3		rotation;
+	std::string				name;
+	std::vector<Vector3>	vertices;
+	std::vector<Face>		faces;
+	Vector3					pos;
+	Vector3					rotation;
 
 	Mesh(std::string _name, int vertices_count, int faces_count)
-	: name(_name), vertices(new Vector3[vertices_count]), vertices_nb(vertices_count)
-	, faces(new Face[faces_count]), faces_nb(faces_count)
+	: name(_name), vertices(vertices_count)
+	, faces(faces_count)
 	{}
 
 	Mesh(const Mesh & to_copy)
 	: name(to_copy.name + "_copy")
-	, vertices(new Vector3[to_copy.vertices_nb]), vertices_nb(to_copy.vertices_nb)
-	, faces(new Face[to_copy.faces_nb]), faces_nb(to_copy.faces_nb)
+	, vertices(to_copy.vertices.size())
+	, faces(to_copy.faces.size())
 	, pos(to_copy.pos), rotation(to_copy.rotation)
 	{
-		for (int i(0); i < vertices_nb; ++i)
-			vertices[i] = to_copy.vertices[i];
-		for (int i(0); i < faces_nb; ++i)
-			faces[i] = to_copy.faces[i];
+		vertices = to_copy.vertices;
+		faces = to_copy.faces;
 	}
 
 	Mesh &operator = (const Mesh & to_assign)
@@ -148,16 +145,8 @@ struct Mesh
 		if (this != &to_assign)
 		{
 			name = to_assign.name + "_copy";
-			delete [] vertices;
-			vertices = new Vector3[to_assign.vertices_nb];
-			vertices_nb = to_assign.vertices_nb;
-			for (int i(0); i < vertices_nb; ++i)
-				vertices[i] = to_assign.vertices[i];
-			delete [] faces;
-			faces = new Face[to_assign.faces_nb];
-			faces_nb = to_assign.faces_nb;
-			for (int i(0); i < faces_nb; ++i)
-				faces[i] = to_assign.faces[i];
+			vertices = to_assign.vertices;
+			faces = to_assign.faces;
 			pos = to_assign.pos;
 			rotation = to_assign.rotation;
 		}
@@ -166,15 +155,13 @@ struct Mesh
 
 	~Mesh()
 	{
-		delete[] vertices;
-		delete[] faces;
 	}
 };
 
 std::ostream & operator << (std::ostream & os, const Mesh & to_print)
 {
-	os << to_print.name << " has " << to_print.vertices_nb << " vertices :\n";
-	for (int i(0); i < to_print.vertices_nb; ++i)
+	os << to_print.name << " has " << to_print.vertices.size() << " vertices :\n";
+	for (size_t i(0); i < to_print.vertices.size(); ++i)
 		os << i << " : " << to_print.vertices[i] << '\n';
 	os << to_print.name << " position is : " << to_print.pos << "\n"
 		 << to_print.name << " rotation is : " << to_print.pos;
@@ -463,7 +450,7 @@ void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//Li
 		
 		//5 For each faces :
 		// std::cout << "Transform matrix :\n" << transform << '\n';
-		for (int f(0); f < mesh[i].faces_nb; ++f)
+		for (size_t f(0); f < mesh[i].faces.size(); ++f)
 		{
 			lcppgl::tools::Color white(255, 255, 255, 255);
 			Vector3 vertex_a = mesh[i].vertices[mesh[i].faces[f].a];
