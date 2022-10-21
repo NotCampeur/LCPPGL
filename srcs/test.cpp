@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/20 15:26:35 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/21 17:36:32 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,7 +279,7 @@ void	choose_the_test(lcppgl::Context &context)
 							"4. grid rendering",
 							"5. Sierpinski Triangle",
 							"6. Draw graph",
-							"7. Cube"};
+							"7. 3D rendering"};
 	render.clear();
 	for (int i(0); i < size; ++i)
 	{
