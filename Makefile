@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/13 17:24:52 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/24 11:56:54 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 SRC 	=		Application.cpp \
 				Context.cpp \
 				\
-				Printer.cpp Writer.cpp \
+				Printer.cpp ZPrinter.cpp Writer.cpp \
 				\
 				Rectangle.cpp Color.cpp Texture.cpp
 

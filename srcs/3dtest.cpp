@@ -95,61 +95,30 @@ float interpolate(float min, float max, float gradient)
 	return (min + (max - min) * clamp(gradient));
 }
 
-void	rasterize(lcppgl::Printer &printer,
+void	rasterize(lcppgl::ZPrinter &zprinter,
 					Vector3 p_a, Vector3 p_b, Vector3 p_c,
 					lcppgl::tools::Color color)
 {
-	Vector3 a;
-	Vector3 b;
-	Vector3 c;
+	Vector3 a(p_a);
+	Vector3 b(p_b);
+	Vector3 c(p_c);
 
 	// This part sort the vertices based on their y position.
-	{
-		if (p_a.y < p_b.y && p_a.y < p_c.y)
-		{
-			a = p_a;
-			if (p_b.y < p_c.y)
-			{
-				b = p_b;
-				c = p_c;
-			}
-			else
-			{
-				b = p_c;
-				c = p_b;
-			}
-		}
-		else if (p_b.y < p_a.y && p_b.y < p_c.y)
-		{
-			a = p_b;
-			if (p_a.y < p_c.y)
-			{
-				b = p_a;
-				c = p_c;
-			}
-			else
-			{
-				b = p_c;
-				c = p_a;
-			}
-		}
-		else
-		{
-			a = p_c;
-			if (p_a.y < p_b.y)
-			{
-				b = p_a;
-				c = p_b;
-			}
-			else
-			{
-				b = p_b;
-				c = p_a;
-			}
-		}
-	}
-	float a_b_slope((b.y - a.y) / (b.x - a.x));
-	float a_c_slope((c.y - a.y) / (c.x - a.x));
+	if (a.y > b.y)
+		std::swap(a, b);
+	if (b.y > c.y)
+		std::swap(b, c);
+	if (a.y > b.y)
+		std::swap(a, b);
+
+	float a_b_slope(0.0f);
+	float a_c_slope(0.0f);
+
+	if (b.y - a.y > 0)
+		a_b_slope = (b.x - a.x) / (b.y - a.y);
+	if (c.y - a.y > 0)
+		a_c_slope = (c.x - a.x) / (c.y - a.y);
+	
 	// scan line algorithm
 	if (a_b_slope > a_c_slope)
 	{
@@ -157,23 +126,39 @@ void	rasterize(lcppgl::Printer &printer,
 		{
 			if (y < b.y)
 			{
-				float gradient1 = (y - a.y) / (c.y - a.y);
-				float gradient2 = (y - a.y) / (b.y - a.y);
+				float gradient1 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
+				float gradient2 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
 
-				int start_x(interpolate(a.x, c.x, gradient1));
-				int end_x(interpolate(a.x, b.x, gradient2));
+				float start_x(interpolate(a.x, c.x, gradient1));
+				float end_x(interpolate(a.x, b.x, gradient2));
 
-				printer.put_line(lcppgl::tools::Rectangle(start_x, y, end_x, y), color);
+				float z1 = interpolate(a.z, c.z, gradient1);
+				float z2 = interpolate(a.z, b.z, gradient2);
+
+				for (float x(start_x); x < end_x; ++x)
+				{
+					float z_gradient = (x - start_x) / (end_x - start_x);
+					float current_z = interpolate(z1, z2, z_gradient);
+					zprinter.put_pixel(x, y, current_z, color);
+				}
 			}
 			else
 			{
-				float gradient1 = (y - a.y) / (c.y - a.y);
-				float gradient2 = (y - b.y) / (c.y - b.y);
+				float gradient1 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
+				float gradient2 = (b.y != c.y) ? (y - b.y) / (c.y - b.y) : 1.0f;
 
-				int start_x(interpolate(a.x, c.x, gradient1));
-				int end_x(interpolate(b.x, c.x, gradient2));
+				float start_x(interpolate(a.x, c.x, gradient1));
+				float end_x(interpolate(b.x, c.x, gradient2));
 
-				printer.put_line(lcppgl::tools::Rectangle(start_x, y, end_x, y), color);
+				float z1 = interpolate(a.z, c.z, gradient1);
+				float z2 = interpolate(b.z, c.z, gradient2);
+
+				for (float x(start_x); x < end_x; ++x)
+				{
+					float z_gradient = (x - start_x) / (end_x - start_x);
+					float current_z = interpolate(z1, z2, z_gradient);
+					zprinter.put_pixel(x, y, current_z, color);
+				}
 			}
 		}
 	}
@@ -183,29 +168,42 @@ void	rasterize(lcppgl::Printer &printer,
 		{
 			if (y < b.y)
 			{
-				float gradient1 = (y - a.y) / (b.y - a.y);
-				float gradient2 = (y - a.y) / (c.y - a.y);
+				float gradient1 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
+				float gradient2 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
 
-				int start_x(interpolate(a.x, b.x, gradient1));
-				int end_x(interpolate(a.x, c.x, gradient2));
+				float start_x(interpolate(a.x, b.x, gradient1));
+				float end_x(interpolate(a.x, c.x, gradient2));
 
-				printer.put_line(lcppgl::tools::Rectangle(start_x, y, end_x, y), color);
+				float z1 = interpolate(a.z, b.z, gradient1);
+				float z2 = interpolate(a.z, c.z, gradient2);
+
+				for (float x(start_x); x < end_x; ++x)
+				{
+					float z_gradient = (x - start_x) / (end_x - start_x);
+					float current_z = interpolate(z1, z2, z_gradient);
+					zprinter.put_pixel(x, y, current_z, color);
+				}
 			}
 			else
 			{
-				float gradient1 = (y - b.y) / (c.y - b.y);
-				float gradient2 = (y - a.y) / (c.y - a.y);
+				float gradient1 = (b.y != c.y) ? (y - b.y) / (c.y - b.y) : 1.0f;
+				float gradient2 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
 
-				int start_x(interpolate(b.x, c.x, gradient1));
-				int end_x(interpolate(a.x, c.x, gradient2));
+				float start_x(interpolate(b.x, c.x, gradient1));
+				float end_x(interpolate(a.x, c.x, gradient2));
 
-				printer.put_line(lcppgl::tools::Rectangle(start_x, y, end_x, y), color);
+				float z1 = interpolate(b.z, c.z, gradient1);
+				float z2 = interpolate(a.z, c.z, gradient2);
+
+				for (float x(start_x); x < end_x; ++x)
+				{
+					float z_gradient = (x - start_x) / (end_x - start_x);
+					float current_z = interpolate(z1, z2, z_gradient);
+					zprinter.put_pixel(x, y, current_z, color);
+				}
 			}
 		}
 	}
-	// std::cout << "Unsorted vertices : " << p_a << p_b << p_c << "\n";
-	// std::cout << "Sorted vertices : " << a << b << c << "\n"
-	// << "slope of a and b : " << a_b_slope << " and a and c : " << a_c_slope;
 }
 
 struct Camera
@@ -546,7 +544,7 @@ Vector3	project(const lcppgl::Context &context,
 
 void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//List of mesh in futur
 {
-	lcppgl::Printer printer(context);
+	lcppgl::ZPrinter zprinter(context);
 
 	//1 = View matrix
 	Matrix	view(Matrix::look_at(cam.pos, cam.target, Vector3(0, 1, 0)));
@@ -559,7 +557,7 @@ void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//Li
 		1.0f, 0.01f));
 
 	// std::cout << "projection matrix :\n" << projection << '\n';
-	printer.clear();
+	zprinter.clear();
 
 	for (int i(0); i < mesh_nb; ++i)
 	{
@@ -585,7 +583,7 @@ void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//Li
 		// std::cout << "Transform matrix :\n" << transform << '\n';
 		for (size_t f(0); f < mesh[i].faces.size(); ++f)
 		{
-			lcppgl::tools::Color white(255, 255, 255, 255);
+			lcppgl::tools::Color white(f % 255, f % 255, f % 255, 255);
 			Vector3 vertex_a = mesh[i].vertices[mesh[i].faces[f].a];
 			Vector3 vertex_b = mesh[i].vertices[mesh[i].faces[f].b];
 			Vector3 vertex_c = mesh[i].vertices[mesh[i].faces[f].c];
@@ -594,14 +592,14 @@ void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//Li
 			Vector3 pixel_b = project(context, vertex_b, transform);
 			Vector3 pixel_c = project(context, vertex_c, transform);
 			//6 Draw of 2DVertex;
-			// printer.put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
+			// zprinter.put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
 			// 					pixel_c.x, pixel_c.y, white);
-			rasterize(printer, pixel_a, pixel_b, pixel_c, white);
+			rasterize(zprinter, pixel_a, pixel_b, pixel_c, white);
 		}
 	}
 
 	// std::cout << "\n\n";
-	printer.present();
+	zprinter.present();
 }
 
 Mesh	get_mesh(const std::string &path_to_file)
