@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/25 15:18:50 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/25 16:33:19 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,12 +22,16 @@ OBJ_DIR = 		objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-SRC 	=		Application.cpp \
-				Context.cpp \
-				\
-				Printer.cpp ZPrinter.cpp Writer.cpp \
-				\
-				Rectangle.cpp Color.cpp Texture.cpp
+TOOLS	=		Rectangle.cpp Color.cpp Texture.cpp \
+				to_radian.cpp
+
+SYSTEM	=		Application.cpp Context.cpp
+
+RENDER	=		Printer.cpp ZPrinter.cpp Writer.cpp
+
+SRC 	=		${SYSTEM} \
+				${RENDER} \
+				${TOOLS}
 
 TEST_SRC =		test.cpp 3dtest.cpp \
 				${SRC}

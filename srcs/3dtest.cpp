@@ -1,26 +1,19 @@
 #include "lcppgl.hpp"
-#include <cmath>
 #include <vector>
 #include <fstream>
 #include <cstdlib>
-
-float	to_radian(int degree)
-{
-	return (static_cast<float>(degree * (M_PI / 180)));
-}
 
 struct Vector3
 {
 	float	x;
 	float	y;
 	float	z;
-	float	w;
 
-	Vector3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f, float _w = 1.0f): x(_x), y(_y), z(_z), w(_w)
+	Vector3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f): x(_x), y(_y), z(_z)
 	{}
 
 	Vector3(const Vector3 &to_copy)
-	: x(to_copy.x), y(to_copy.y), z(to_copy.z), w(to_copy.w)
+	: x(to_copy.x), y(to_copy.y), z(to_copy.z)
 	{}
 
 	Vector3 &operator=(const Vector3 &to_assign)
@@ -30,7 +23,6 @@ struct Vector3
 			x = to_assign.x;
 			y = to_assign.y;
 			z = to_assign.z;
-			w = to_assign.w;
 		}
 		return *this;
 	}
@@ -81,7 +73,7 @@ struct Vector3
 
 std::ostream &operator<<(std::ostream & os, const Vector3 &pos)
 {
-	os << "[" << pos.x << ',' << pos.y << ',' << pos.z << ',' << pos.w << ']';
+	os << "[" << pos.x << ',' << pos.y << ',' << pos.z << ']';
 	return os;
 }
 
