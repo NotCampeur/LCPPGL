@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/24 13:06:14 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/25 16:00:19 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,15 @@ lcppgl::ZPrinter::put_line(const lcppgl::tools::Rectangle & points, const lcppgl
 void
 lcppgl::ZPrinter::put_triangle(int x1, int y1, int x2, int y2, int x3, int y3)
 {
+	int width(_current_context.width());
+	int height(_current_context.height());
+	
+	if (x1 < 0 || x2 < 0 || x3 < 0
+		|| x1 >= width || x2 >= width || x3 >= width
+		|| y1 < 0 || y2 < 0 || y3 < 0
+		|| y1 >= height || y2 >= height || y3 >= height)
+		return ;
+
 	SDL_RenderDrawLine(_current_context.renderer(), x1, y1, x2, y2);
 	SDL_RenderDrawLine(_current_context.renderer(), x2, y2, x3, y3);
 	SDL_RenderDrawLine(_current_context.renderer(), x3, y3, x1, y1);
@@ -127,11 +136,14 @@ lcppgl::ZPrinter::put_pixel(int x, int y, float z, const tools::Color & color)
 {
 	Uint8 r, g, b, a;
 
-	int buffer_pos(y * _current_context.width() + x);
+	int width(_current_context.width());
+	int height(_current_context.height());
+	
+	if (x < 0 || x >= width || y < 0 || y >= height)
+		return ;
+	int buffer_pos(y * width + x);
 	if (z <= _z_buffer[buffer_pos])
 	{
-		// std::cout << "x : " <<  x << " y : " << y << " buffer pos : " << buffer_pos
-		// 	<< "\nz value : " << z << " buffer z value : " << _z_buffer[buffer_pos] << '\n';
 		_z_buffer[buffer_pos] = z;
 		SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
 		set_draw_color(color);
