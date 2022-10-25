@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/25 16:33:19 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/25 17:10:13 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ OBJ_DIR = 		objs
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 TOOLS	=		Rectangle.cpp Color.cpp Texture.cpp \
-				to_radian.cpp
+				to_radian.cpp Vector3.cpp
 
 SYSTEM	=		Application.cpp Context.cpp
 
@@ -79,6 +79,8 @@ endif
 
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
+
+print-%  : ; @echo $* = $($*)
 
 SDL = ./ressources/great.png
 

@@ -3,79 +3,7 @@
 #include <fstream>
 #include <cstdlib>
 
-struct Vector3
-{
-	float	x;
-	float	y;
-	float	z;
-
-	Vector3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f): x(_x), y(_y), z(_z)
-	{}
-
-	Vector3(const Vector3 &to_copy)
-	: x(to_copy.x), y(to_copy.y), z(to_copy.z)
-	{}
-
-	Vector3 &operator=(const Vector3 &to_assign)
-	{
-		if (this != &to_assign)
-		{
-			x = to_assign.x;
-			y = to_assign.y;
-			z = to_assign.z;
-		}
-		return *this;
-	}
-
-	~Vector3() {}
-
-	Vector3 operator + (const Vector3 &vec) const
-	{
-		return (Vector3(x + vec.x, y + vec.y, z + vec.z));
-	}
-
-	Vector3 operator - (const Vector3 &vec) const
-	{
-		return (Vector3(x - vec.x, y - vec.y, z - vec.z));
-	}
-
-	Vector3 operator * (const Vector3 &vec) const
-	{
-		return (Vector3(x * vec.x, y * vec.y, z * vec.z));
-	}
-
-	Vector3 operator / (const Vector3 &vec) const
-	{
-		return (Vector3(x / vec.x, y / vec.y, z / vec.z));
-	}
-
-	Vector3	normalize()
-	{
-		float length(std::sqrt((x * x) + (y * y) + (z * z)));
-
-		return (Vector3(x / length, y / length, z / length));
-	}
-
-	float dot(const Vector3 &vec) const
-	{
-		return (x * vec.x + y * vec.y + z * vec.z);
-	}
-
-	Vector3	cross(const Vector3 &vec) const
-	{
-		return (Vector3(
-			y * vec.z - z * vec.y,
-			z * vec.x - x * vec.z,
-			x * vec.y - y * vec.x
-		));
-	}
-};
-
-std::ostream &operator<<(std::ostream & os, const Vector3 &pos)
-{
-	os << "[" << pos.x << ',' << pos.y << ',' << pos.z << ']';
-	return os;
-}
+using namespace lcppgl::tools;
 
 float clamp(float val, float min = 0, float max = 1)
 {
@@ -88,7 +16,7 @@ float interpolate(float min, float max, float gradient)
 }
 
 // Might return SDL_Point[] later.
-void	scan_line(lcppgl::ZPrinter &zprinter, lcppgl::tools::Color color,
+void	scan_line(lcppgl::ZPrinter &zprinter, Color color,
 					float y,
 					const Vector3 & a, const Vector3 & b,
 					const Vector3 & c, const Vector3 & d)
@@ -112,7 +40,7 @@ void	scan_line(lcppgl::ZPrinter &zprinter, lcppgl::tools::Color color,
 
 void	rasterize(lcppgl::ZPrinter &zprinter,
 					Vector3 a, Vector3 b, Vector3 c,
-					lcppgl::tools::Color color)
+					Color color)
 {
 	float a_b_slope(0.0f);
 	float a_c_slope(0.0f);
@@ -525,7 +453,7 @@ void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//Li
 		// std::cout << "Transform matrix :\n" << transform << '\n';
 		for (size_t f(0); f < mesh[i].faces.size(); ++f)
 		{
-			lcppgl::tools::Color white(f % 255, f % 255, f % 255, 255);
+			Color white(f % 255, f % 255, f % 255, 255);
 			Vector3 vertex_a = mesh[i].vertices[mesh[i].faces[f].a];
 			Vector3 vertex_b = mesh[i].vertices[mesh[i].faces[f].b];
 			Vector3 vertex_c = mesh[i].vertices[mesh[i].faces[f].c];
