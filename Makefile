@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/24 11:56:54 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/25 15:18:50 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,17 +35,7 @@ TEST_SRC =		test.cpp 3dtest.cpp \
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 TEST_OBJ = 		$(addprefix $(OBJ_DIR)/, $(TEST_SRC:%.cpp=%.o))
 #Compilation flag
-CFLAGS	=		-Wall -Wextra -Werror -g3
-
-DEBUG =
-ifdef DEBUG
-    CFLAGS += -fsanitize=address
-endif
-
-#Include flag
-IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
-
-SDL = ./ressources/great.png
+CFLAGS	=		-Wall -Wextra -Werror 
 
 # Colors
 
@@ -57,6 +47,36 @@ _BLUE=	$'\033[34m
 _PURPLE=$'\033[35m
 _CYAN=	$'\033[36m
 _WHITE=	$'\033[37m
+
+DEBUG =
+# Add fsanitize to the compilation flags if DEBUG is set to fs.
+# If DEBUG is set to valgrind, add debug flags to the compilation flags.
+ifeq ($(DEBUG), fs)
+	CFLAGS += -fsanitize=address
+	CFLAGS += -g3
+	CFLAGS += -O0
+	msg = $(shell echo "$(_PURPLE)fsanitize and debug flags are added.$(_WHITE)")
+	useless := $(info $(msg))
+else ifeq ($(DEBUG), vl)
+	CFLAGS += -g3
+	CFLAGS += -O0
+	msg = $(shell echo "$(_PURPLE)Valgrind and debug flags are added. Take care to rebuild the program entirely if you already used valgrind.$(_WHITE)")
+	useless := $(info $(msg))
+else ifeq ($(DEBUG), gdb)
+	CFLAGS += -g3
+	CFLAGS += -O0
+	msg = $(shell echo "$(_PURPLE)gdb and debug flags are added.$(_WHITE)")
+	useless := $(info $(msg))
+else
+	CFLAGS += -O3
+	msg = $(shell echo "$(_PURPLE)Debug mode not enabled. Optimization flags are added.$(_WHITE)")
+	useless := $(info $(msg))
+endif
+
+#Include flag
+IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
+
+SDL = ./ressources/great.png
 
 all:			$(SDL) $(NAME).a
 

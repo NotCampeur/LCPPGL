@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/21 17:36:32 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/25 15:32:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,9 +371,11 @@ int main(void)
 
 		main_context.add_event_functor(exit_input);
 		audio_test();
-		while (main_context.is_running())
+		while (1)
 		{
 			choose_the_test(main_context);
+			if (main_context.is_running() == false)
+				break ;
 			lcppgl::Application::instance().run();
 		}
 	}
