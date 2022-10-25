@@ -95,15 +95,37 @@ float interpolate(float min, float max, float gradient)
 	return (min + (max - min) * clamp(gradient));
 }
 
+// Might return SDL_Point[] later.
+void	scan_line(lcppgl::ZPrinter &zprinter, lcppgl::tools::Color color,
+					float y,
+					const Vector3 & a, const Vector3 & b,
+					const Vector3 & c, const Vector3 & d)
+{
+	float gradient1 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
+	float gradient2 = (c.y != d.y) ? (y - c.y) / (d.y - c.y) : 1.0f;
+
+	float start_x(interpolate(a.x, b.x, gradient1));
+	float end_x(interpolate(c.x, d.x, gradient2));
+
+	float z1 = interpolate(a.z, b.z, gradient1);
+	float z2 = interpolate(c.z, d.z, gradient2);
+
+	for (float x(start_x); x < end_x; ++x)
+	{
+		float z_gradient = (x - start_x) / (end_x - start_x);
+		float current_z = interpolate(z1, z2, z_gradient);
+		zprinter.put_pixel(x, y, current_z, color);
+	}
+}
+
 void	rasterize(lcppgl::ZPrinter &zprinter,
-					Vector3 p_a, Vector3 p_b, Vector3 p_c,
+					Vector3 a, Vector3 b, Vector3 c,
 					lcppgl::tools::Color color)
 {
-	Vector3 a(p_a);
-	Vector3 b(p_b);
-	Vector3 c(p_c);
+	float a_b_slope(0.0f);
+	float a_c_slope(0.0f);
 
-	// This part sort the vertices based on their y position.
+	// Sort vertices based on their y position.
 	if (a.y > b.y)
 		std::swap(a, b);
 	if (b.y > c.y)
@@ -111,98 +133,26 @@ void	rasterize(lcppgl::ZPrinter &zprinter,
 	if (a.y > b.y)
 		std::swap(a, b);
 
-	float a_b_slope(0.0f);
-	float a_c_slope(0.0f);
-
 	if (b.y - a.y > 0)
 		a_b_slope = (b.x - a.x) / (b.y - a.y);
 	if (c.y - a.y > 0)
 		a_c_slope = (c.x - a.x) / (c.y - a.y);
 	
-	// scan line algorithm
 	if (a_b_slope > a_c_slope)
 	{
 		for (float y(a.y); y < c.y; ++y)
-		{
 			if (y < b.y)
-			{
-				float gradient1 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
-				float gradient2 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
-
-				float start_x(interpolate(a.x, c.x, gradient1));
-				float end_x(interpolate(a.x, b.x, gradient2));
-
-				float z1 = interpolate(a.z, c.z, gradient1);
-				float z2 = interpolate(a.z, b.z, gradient2);
-
-				for (float x(start_x); x < end_x; ++x)
-				{
-					float z_gradient = (x - start_x) / (end_x - start_x);
-					float current_z = interpolate(z1, z2, z_gradient);
-					zprinter.put_pixel(x, y, current_z, color);
-				}
-			}
+				scan_line(zprinter, color, y, a, c, a, b);
 			else
-			{
-				float gradient1 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
-				float gradient2 = (b.y != c.y) ? (y - b.y) / (c.y - b.y) : 1.0f;
-
-				float start_x(interpolate(a.x, c.x, gradient1));
-				float end_x(interpolate(b.x, c.x, gradient2));
-
-				float z1 = interpolate(a.z, c.z, gradient1);
-				float z2 = interpolate(b.z, c.z, gradient2);
-
-				for (float x(start_x); x < end_x; ++x)
-				{
-					float z_gradient = (x - start_x) / (end_x - start_x);
-					float current_z = interpolate(z1, z2, z_gradient);
-					zprinter.put_pixel(x, y, current_z, color);
-				}
-			}
-		}
+				scan_line(zprinter, color, y, a, c, b, c);
 	}
 	else
 	{
 		for (float y(a.y); y < c.y; ++y)
-		{
 			if (y < b.y)
-			{
-				float gradient1 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
-				float gradient2 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
-
-				float start_x(interpolate(a.x, b.x, gradient1));
-				float end_x(interpolate(a.x, c.x, gradient2));
-
-				float z1 = interpolate(a.z, b.z, gradient1);
-				float z2 = interpolate(a.z, c.z, gradient2);
-
-				for (float x(start_x); x < end_x; ++x)
-				{
-					float z_gradient = (x - start_x) / (end_x - start_x);
-					float current_z = interpolate(z1, z2, z_gradient);
-					zprinter.put_pixel(x, y, current_z, color);
-				}
-			}
+				scan_line(zprinter, color, y, a, b, a, c);
 			else
-			{
-				float gradient1 = (b.y != c.y) ? (y - b.y) / (c.y - b.y) : 1.0f;
-				float gradient2 = (a.y != c.y) ? (y - a.y) / (c.y - a.y) : 1.0f;
-
-				float start_x(interpolate(b.x, c.x, gradient1));
-				float end_x(interpolate(a.x, c.x, gradient2));
-
-				float z1 = interpolate(b.z, c.z, gradient1);
-				float z2 = interpolate(a.z, c.z, gradient2);
-
-				for (float x(start_x); x < end_x; ++x)
-				{
-					float z_gradient = (x - start_x) / (end_x - start_x);
-					float current_z = interpolate(z1, z2, z_gradient);
-					zprinter.put_pixel(x, y, current_z, color);
-				}
-			}
-		}
+				scan_line(zprinter, color, y, b, c, a, c);
 	}
 }
 
