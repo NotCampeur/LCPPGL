@@ -66,39 +66,6 @@ void	rasterize(lcppgl::ZPrinter &zprinter,
 	}
 }
 
-struct Face
-{
-	int a;
-	int b;
-	int c;
-
-	Face(int _a = 0, int _b = 0, int _c = 0) : a(_a), b(_b), c(_c)
-	{}
-
-	Face(const Face & to_copy) : a(to_copy.a), b(to_copy.b), c(to_copy.c)
-	{}
-
-	Face & operator = (const Face & to_assign)
-	{
-		if (this != &to_assign)
-		{
-			a = to_assign.a;
-			b = to_assign.b;
-			c = to_assign.c;
-		}
-		return *this;
-	}
-
-	~Face()
-	{}
-};
-
-std::ostream &operator<<(std::ostream & os, const Face &face)
-{
-	os << "[" << face.a << '-' << face.b << '-' << face.c << ']';
-	return os;
-}
-
 struct Mesh
 {
 	std::string				name;

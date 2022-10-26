@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 21:20:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 15:47:37 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/26 16:19:00 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,6 @@ namespace lcppgl
 }
 
 # include "Vector3.hpp"
+# include "Face.hpp"
 
 #endif
