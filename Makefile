@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/26 16:29:13 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/26 16:44:29 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,8 @@ OBJ_DIR = 		objs
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 TOOLS	=		Rectangle.cpp Color.cpp Texture.cpp \
-				basic_functions.cpp Vector3.cpp Face.cpp Mesh.cpp
+				basic_functions.cpp \
+				Vector3.cpp Face.cpp Mesh.cpp Matrix4x4.cpp
 
 SYSTEM	=		Application.cpp Context.cpp
 
