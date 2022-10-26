@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 21:20:57 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/25 16:50:38 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/26 15:47:37 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,27 @@ namespace lcppgl
 		/**
 		 * @brief Take an angle in degree and return an angle in radian
 		 */
-		float	to_radian(int degree);
+		float to_radian(int degree);
+
+		/**
+		 * @brief Contain a value in a range.
+		 * 
+		 * @param val The value you want to contain.
+		 * @param min The minimal wanted value, default 0.
+		 * @param max The maximal wanted value, default 1.
+		 * @return Either min, max or the value.
+		 */
+		float clamp(float val, float min = 0.0f, float max = 1.0f);
+
+		/**
+		 * @brief Compute a value between min and max according the gradient.
+		 * 
+		 * @param min The starting value of the range.
+		 * @param max The end value of the range.
+		 * @param gradient The percent toward the end value.
+		 * @return A float containing the interpolation.
+		 */
+		float interpolate(float min, float max, float gradient);
 	}
 }
 

@@ -5,16 +5,6 @@
 
 using namespace lcppgl::tools;
 
-float clamp(float val, float min = 0, float max = 1)
-{
-	return std::max(min, std::min(val, max));
-}
-
-float interpolate(float min, float max, float gradient)
-{
-	return (min + (max - min) * clamp(gradient));
-}
-
 // Might return SDL_Point[] later.
 void	scan_line(lcppgl::ZPrinter &zprinter, Color color,
 					float y,
