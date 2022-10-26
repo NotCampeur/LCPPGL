@@ -66,12 +66,6 @@ void	rasterize(lcppgl::ZPrinter &zprinter,
 	}
 }
 
-struct Camera
-{
-	Vector3	pos;
-	Vector3	target;
-};
-
 struct Face
 {
 	int a;
@@ -402,7 +396,7 @@ Vector3	project(const lcppgl::Context &context,
 	return td_point;
 }
 
-void	render(lcppgl::Context &context, Camera &cam, Mesh mesh[], int mesh_nb)//List of mesh in futur
+void	render(lcppgl::Context &context, lcppgl::Camera &cam, Mesh mesh[], int mesh_nb)//List of mesh in futur
 {
 	lcppgl::ZPrinter zprinter(context);
 
@@ -512,7 +506,7 @@ Mesh	get_mesh(const std::string &path_to_file)
 
 void	draw_cube(lcppgl::Context &context)
 {
-	static Camera cam;
+	static lcppgl::Camera cam;
 
 	if (cam.pos.z == 0.0f)
 	{
