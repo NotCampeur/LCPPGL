@@ -144,21 +144,23 @@ void	render(lcppgl::Context &context, lcppgl::Camera &cam, Mesh mesh[], int mesh
 void	draw_cube(lcppgl::Context &context)
 {
 	static lcppgl::Camera cam;
+	static std::vector<Mesh> meshes;
+	
+	context.set_fps_limit(0);
 
 	if (cam.pos.z == 0.0f)
 	{
 		cam.pos = Vector3(0, 0, 5.0f);
 		cam.target = Vector3(0, 0, 0.0f);
 	}
-	static Mesh suzanne = Mesh::get_from_file("./ressources/suzanne.obj");
 
-	Mesh meshes[1] = {suzanne};
+	if (meshes.size() == 0)
+		meshes.push_back(Mesh::get_from_file("./ressources/suzanne.obj"));
 
-	context.set_fps_limit(0);
-	
-	render(context, cam, meshes, 1);
+	render(context, cam, meshes.data(), meshes.size());
 
-	// suzanne.rotation.x += 1.0f;
-	suzanne.rotation.y += 1.0f;
-	// suzanne.rotation.z += 1.0f;
+	for(Mesh & m: meshes)
+	{
+		m.rotation.y += 1.0f;
+	}
 }
