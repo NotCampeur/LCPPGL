@@ -1,6 +1,5 @@
 #include "lcppgl.hpp"
 #include <vector>
-#include <fstream>
 #include <cstdlib>
 
 using namespace lcppgl::tools;
@@ -142,54 +141,6 @@ void	render(lcppgl::Context &context, lcppgl::Camera &cam, Mesh mesh[], int mesh
 	zprinter.present();
 }
 
-Mesh	get_mesh(const std::string &path_to_file)
-{
-	Mesh result("mesh", 0, 0);
-	std::ifstream file(path_to_file);
-
-	if (file.fail())
-	{
-		std::cerr << "Cannot open `" << path_to_file << "`\n";
-	}
-	while (file.good())
-	{
-		char buffer[50] = {};
-
-		file.getline(buffer, 50, '\n');
-		if (buffer[0] == '#')
-			continue;
-		else if (buffer[0] == 'o')
-			result.name = std::string(buffer + 2);
-		else if (buffer[0] == 'v')
-		{
-			Vector3	vertex;
-			char 	*y_val;
-			char 	*z_val;
-
-			vertex.x = strtof(buffer + 2, &y_val);
-			vertex.y = strtof(y_val, &z_val);
-			vertex.z = strtof(z_val, NULL);
-
-			result.vertices.push_back(vertex);
-		}
-		else if (buffer[0] == 'f')
-		{
-			Face	face;
-			char 	*b_val;
-			char 	*c_val;
-
-			// Need to remove one because faces in object files start at 1 and not 0
-			face.a = strtol(buffer + 2, &b_val, 10) - 1;
-			face.b = strtol(b_val, &c_val, 10) - 1;
-			face.c = strtol(c_val, NULL, 10) - 1;
-
-			result.faces.push_back(face);
-		}
-	}
-	file.close();
-	return result;
-}
-
 void	draw_cube(lcppgl::Context &context)
 {
 	static lcppgl::Camera cam;
@@ -199,7 +150,7 @@ void	draw_cube(lcppgl::Context &context)
 		cam.pos = Vector3(0, 0, 5.0f);
 		cam.target = Vector3(0, 0, 0.0f);
 	}
-	static Mesh suzanne = get_mesh("./ressources/suzanne.obj");
+	static Mesh suzanne = Mesh::get_from_file("./ressources/suzanne.obj");
 
 	Mesh meshes[1] = {suzanne};
 

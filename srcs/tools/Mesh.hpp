@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 16:12:12 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 16:28:23 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/26 16:52:25 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define LCPPGL_MESH_HPP
 
 # include <iostream>
+# include <fstream>
 # include <vector>
 # include "Vector3.hpp"
 # include "Face.hpp"
@@ -37,6 +38,8 @@ namespace lcppgl
 			Mesh &operator = (const Mesh & to_assign);
 
 			~Mesh();
+
+			static Mesh get_from_file(const std::string & path_to_file);
 		};
 	}
 }
