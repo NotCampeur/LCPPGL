@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 16:05:27 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 16:07:14 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:38:55 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@ namespace lcppgl
 	{
 		tools::Vector3	pos;
 		tools::Vector3	target;
+
+		Camera(const tools::Vector3 & position = tools::Vector3(),
+				const tools::Vector3 & direction = tools::Vector3());
+		Camera(const Camera & to_copy);
+		Camera & operator = (const Camera & to_assign);
+		~Camera();
 	};
 }
 

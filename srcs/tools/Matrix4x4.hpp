@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 16:33:00 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 16:42:47 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:36:26 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define LCPPGL_MATRIX_4X4_HPP
 
 # include <iostream>
-# include "lcppgl_tools.hpp"
 # include <cmath>
+# include "Vector3.hpp"
 
 namespace lcppgl
 {

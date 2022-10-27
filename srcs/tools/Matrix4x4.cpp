@@ -6,11 +6,12 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 16:36:41 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 16:46:35 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:32:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Matrix4x4.hpp"
+#include "lcppgl_tools.hpp"
 
 using namespace lcppgl::tools;
 

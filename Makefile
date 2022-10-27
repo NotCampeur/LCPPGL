@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/26 16:44:29 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/27 14:43:15 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ TOOLS	=		Rectangle.cpp Color.cpp Texture.cpp \
 
 SYSTEM	=		Application.cpp Context.cpp
 
-RENDER	=		Printer.cpp ZPrinter.cpp Writer.cpp
+RENDER	=		Printer.cpp ZPrinter.cpp Writer.cpp Camera.cpp
 
 SRC 	=		${SYSTEM} \
 				${RENDER} \
