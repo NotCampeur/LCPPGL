@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/25 15:32:36 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/29 23:07:33 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ int id;
 float timing = 0;
 float freq = 440;
 
-void exit_input(lcppgl::Context &context)
+void exit_input(lcppgl::Context &context, void *param)
 {
+	bool * slow(reinterpret_cast<bool *>(param));
+	
 	SDL_Event event;
 	if (SDL_PollEvent(&event))
 	{
@@ -45,6 +47,10 @@ void exit_input(lcppgl::Context &context)
 					else
 						context.set_size(1920, 1080);
 				}
+				else if (event.key.keysym.sym == SDLK_s)
+				{
+					(*slow) = !(*slow);
+				}
 				break;
 			default:
 				break;
@@ -53,8 +59,9 @@ void exit_input(lcppgl::Context &context)
 }
 
 // Put two overlapping rectangles on the screen to test color blending.
-void overlapping_rectangles(lcppgl::Context &context)
+void overlapping_rectangles(lcppgl::Context &context, void * param)
 {
+	(void)param;
 	lcppgl::Printer render(context);
 	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 25);
 	lcppgl::tools::Color red;
@@ -88,8 +95,9 @@ void overlapping_rectangles(lcppgl::Context &context)
 #include <sstream> // Needed since you can't use to_string() in C++98.
 // Put random text on the screen at rendom position to test text rendering.
 // Put text on the screen in the three different ways.
-void text_rendering(lcppgl::Context &context)
+void text_rendering(lcppgl::Context &context, void * param)
 {
+	(void)param;
 	lcppgl::Printer render(context);
 	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 80);
 	context.set_fps_limit(2);
@@ -110,8 +118,9 @@ void text_rendering(lcppgl::Context &context)
 	render.present();
 }
 
-void great_rendering(lcppgl::Context &context)
+void great_rendering(lcppgl::Context &context, void * param)
 {
+	(void)param;
 	try
 	{
 		lcppgl::tools::Texture texture(context, "./ressources/great.png");
@@ -132,8 +141,9 @@ void great_rendering(lcppgl::Context &context)
 	}
 }
 
-void grid_rendering(lcppgl::Context &context)
+void grid_rendering(lcppgl::Context &context, void * param)
 {
+	(void)param;
 	try
 	{
 		lcppgl::Printer render(context);
@@ -192,8 +202,9 @@ void inner_triangle(lcppgl::Printer & printer,
 }
 
 // The Sierpinski Triangle
-void	draw_triangle(lcppgl::Context &context)
+void	draw_triangle(lcppgl::Context &context, void * param)
 {
+	(void)param;
 	SDL_PauseAudioDevice(id, false);
 	SDL_Delay(100);
 	lcppgl::Printer printer(context);
@@ -219,8 +230,9 @@ void	draw_triangle(lcppgl::Context &context)
 	SDL_PauseAudioDevice(id, true);
 }
 
-void	draw_graph(lcppgl::Context &context)
+void	draw_graph(lcppgl::Context &context, void * param)
 {
+	(void)param;
 	lcppgl::Printer printer(context);
 	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 80);
 
@@ -265,9 +277,9 @@ void	draw_graph(lcppgl::Context &context)
 	printer.present();
 }
 
-void	draw_cube(lcppgl::Context &);
+void	draw_cube(lcppgl::Context &, void * param);
 
-void	choose_the_test(lcppgl::Context &context)
+void	choose_the_test(lcppgl::Context &context, void *param)
 {
 	lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 100);
 	lcppgl::Printer render(context);
@@ -304,19 +316,19 @@ void	choose_the_test(lcppgl::Context &context)
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					context.stop();
 				else if (event.key.keysym.sym == SDLK_KP_1 || event.key.keysym.sym == SDLK_1)
-						context.add_render_functor(overlapping_rectangles);
+						context.add_render_functor(overlapping_rectangles, param);
 				else if (event.key.keysym.sym == SDLK_KP_2 || event.key.keysym.sym == SDLK_2)
-					context.add_render_functor(text_rendering);
+					context.add_render_functor(text_rendering, param);
 				else if (event.key.keysym.sym == SDLK_KP_3 || event.key.keysym.sym == SDLK_3)
-					context.add_render_functor(great_rendering);
+					context.add_render_functor(great_rendering, param);
 				else if (event.key.keysym.sym == SDLK_KP_4 || event.key.keysym.sym == SDLK_4)
-					context.add_render_functor(grid_rendering);
+					context.add_render_functor(grid_rendering, param);
 				else if (event.key.keysym.sym == SDLK_KP_5 || event.key.keysym.sym == SDLK_5)
-					context.add_render_functor(draw_triangle);
+					context.add_render_functor(draw_triangle, param);
 				else if (event.key.keysym.sym == SDLK_KP_6 || event.key.keysym.sym == SDLK_6)
-					context.add_render_functor(draw_graph);
+					context.add_render_functor(draw_graph, param);
 				else if (event.key.keysym.sym == SDLK_KP_7 || event.key.keysym.sym == SDLK_7)
-					context.add_render_functor(draw_cube);
+					context.add_render_functor(draw_cube, param);
 				else
 					choosen = false;
 				break;
@@ -367,13 +379,14 @@ int main(void)
 {
 	try
 	{
+		bool slow(false);
 		lcppgl::Context &main_context = lcppgl::Application::instance().create_context("lcppgl tests", 1920, 1080);
 
-		main_context.add_event_functor(exit_input);
+		main_context.add_event_functor(exit_input, &slow);
 		audio_test();
 		while (1)
 		{
-			choose_the_test(main_context);
+			choose_the_test(main_context, &slow);
 			if (main_context.is_running() == false)
 				break ;
 			lcppgl::Application::instance().run();
