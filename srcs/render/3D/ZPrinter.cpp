@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/27 15:41:26 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/31 10:00:55 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,22 @@ lcppgl::ZPrinter::put_triangle(int x1, int y1, int x2, int y2, int x3, int y3,
 }
 
 void
+lcppgl::ZPrinter::put_pixel(int x, int y, float z)
+{
+	int width(_current_context.width());
+	int height(_current_context.height());
+	
+	if (x < 0 || x >= width || y < 0 || y >= height)
+		return ;
+	int buffer_pos(y * width + x);
+	if (z <= _z_buffer[buffer_pos])
+	{
+		_z_buffer[buffer_pos] = z;
+		SDL_RenderDrawPoint(_current_context.renderer(), x, y);
+	}
+}
+
+void
 lcppgl::ZPrinter::put_pixel(int x, int y, float z, const tools::Color & color)
 {
 	Uint8 r, g, b, a;
@@ -166,6 +182,28 @@ lcppgl::ZPrinter::_project(const Vector3 &vertex, const Matrix4x4 &matrix) const
 }
 
 void
+lcppgl::ZPrinter::_scan_line(float y,
+								const Vector3 & a, const Vector3 & b,
+								const Vector3 & c, const Vector3 & d)
+{
+	float gradient1 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
+	float gradient2 = (c.y != d.y) ? (y - c.y) / (d.y - c.y) : 1.0f;
+
+	float start_x(interpolate(a.x, b.x, gradient1));
+	float end_x(interpolate(c.x, d.x, gradient2));
+
+	float z1 = interpolate(a.z, b.z, gradient1);
+	float z2 = interpolate(c.z, d.z, gradient2);
+
+	for (float x(start_x); x < end_x; ++x)
+	{
+		float z_gradient = (x - start_x) / (end_x - start_x);
+		float current_z = interpolate(z1, z2, z_gradient);
+		put_pixel(x, y, current_z);
+	}
+}
+
+void
 lcppgl::ZPrinter::_scan_line(Color color,
 								float y,
 								const Vector3 & a, const Vector3 & b,
@@ -185,6 +223,43 @@ lcppgl::ZPrinter::_scan_line(Color color,
 		float z_gradient = (x - start_x) / (end_x - start_x);
 		float current_z = interpolate(z1, z2, z_gradient);
 		put_pixel(x, y, current_z, color);
+	}
+}
+
+void
+lcppgl::ZPrinter::put_filled_triangle(Vector3 a, Vector3 b, Vector3 c)
+{
+	float a_b_slope(0.0f);
+	float a_c_slope(0.0f);
+
+	// Sort vertices based on their y position.
+	if (a.y > b.y)
+		std::swap(a, b);
+	if (b.y > c.y)
+		std::swap(b, c);
+	if (a.y > b.y)
+		std::swap(a, b);
+
+	if (b.y - a.y > 0)
+		a_b_slope = (b.x - a.x) / (b.y - a.y);
+	if (c.y - a.y > 0)
+		a_c_slope = (c.x - a.x) / (c.y - a.y);
+	
+	if (a_b_slope > a_c_slope)
+	{
+		for (float y(a.y); y < c.y; ++y)
+			if (y < b.y)
+				_scan_line(y, a, c, a, b);
+			else
+				_scan_line(y, a, c, b, c);
+	}
+	else
+	{
+		for (float y(a.y); y < c.y; ++y)
+			if (y < b.y)
+				_scan_line(y, a, b, a, c);
+			else
+				_scan_line(y, b, c, a, c);
 	}
 }
 
@@ -234,6 +309,10 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 		static_cast<float>(_current_context.width()) / static_cast<float>(_current_context.height()),
 		1.0f, 0.01f));
 
+	Uint8 r, g, b, a;
+	
+	SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
+
 	for (int i(0); i < meshes_nb; ++i)
 	{
 		Matrix4x4	world;
@@ -251,6 +330,7 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 		for (size_t f(0); f < meshes[i].faces.size(); ++f)
 		{
 			Color white(f % 255, f % 255, f % 255, 255);
+			set_draw_color(white);
 			Vector3 vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
 			Vector3 vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
 			Vector3 vertex_c = meshes[i].vertices[meshes[i].faces[f].c];
@@ -260,9 +340,10 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 			Vector3 pixel_c = _project(vertex_c, transform);
 			// put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
 			// 					pixel_c.x, pixel_c.y, white);
-			put_filled_triangle(pixel_a, pixel_b, pixel_c, white);
+			put_filled_triangle(pixel_a, pixel_b, pixel_c);
 		}
 	}
+	set_draw_color(r, g, b, a);
 }
 
 void

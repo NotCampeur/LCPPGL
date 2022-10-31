@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:38:32 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/27 15:57:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/31 09:56:36 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ namespace lcppgl
 								const tools::Vector3 & a, const tools::Vector3 & b,
 								const tools::Vector3 & c, const tools::Vector3 & d);
 
+			void	_scan_line(float y,
+								const tools::Vector3 & a, const tools::Vector3 & b,
+								const tools::Vector3 & c, const tools::Vector3 & d);
+
 		public:
 			ZPrinter(Context & context, const Camera & cam);
 			~ZPrinter();
@@ -80,9 +84,11 @@ namespace lcppgl
 			void	put_triangle(int x1, int y1, int x2, int y2, int x3, int y3,
 									const tools::Color & color);
 			void	put_filled_triangle(tools::Vector3 a, tools::Vector3 b,
+										tools::Vector3 c);
+			void	put_filled_triangle(tools::Vector3 a, tools::Vector3 b,
 										tools::Vector3 c, tools::Color color);
 
-										
+			void	put_pixel(int x, int y, float z);
 			void	put_pixel(int x, int y, float z, const tools::Color & color);
 			
 			void	put_meshes(tools::Mesh meshes[], int meshes_nb);
