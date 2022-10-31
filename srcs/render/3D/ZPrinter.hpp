@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:38:32 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/31 09:56:36 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/31 10:55:08 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include "Camera.hpp"
 # include "Mesh.hpp"
 # include "Matrix4x4.hpp"
+# include <thread>
+# include <mutex>
 
 namespace lcppgl
 {
@@ -31,6 +33,7 @@ namespace lcppgl
 			Context	&	_current_context;
 			float *		_z_buffer;
 			Camera		_cam;
+			std::mutex	_render;
 
 			ZPrinter &	operator = (const ZPrinter & to_copy);
 			

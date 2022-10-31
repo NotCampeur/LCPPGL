@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/10/27 14:43:15 by ldutriez         ###   ########.fr        #
+#    Updated: 2022/10/31 10:37:13 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ TEST_SRC =		test.cpp 3dtest.cpp \
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 TEST_OBJ = 		$(addprefix $(OBJ_DIR)/, $(TEST_SRC:%.cpp=%.o))
 #Compilation flag
-CFLAGS	=		-Wall -Wextra -Werror 
+CFLAGS	=		-Wall -Wextra -Werror -pthread
 
 # Colors
 

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/31 10:00:55 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/31 11:53:53 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,10 @@ lcppgl::ZPrinter::put_pixel(int x, int y, float z)
 	int buffer_pos(y * width + x);
 	if (z <= _z_buffer[buffer_pos])
 	{
+		_render.lock();
 		_z_buffer[buffer_pos] = z;
 		SDL_RenderDrawPoint(_current_context.renderer(), x, y);
+		_render.unlock();
 	}
 }
 
@@ -162,11 +164,13 @@ lcppgl::ZPrinter::put_pixel(int x, int y, float z, const tools::Color & color)
 	int buffer_pos(y * width + x);
 	if (z <= _z_buffer[buffer_pos])
 	{
+		_render.lock();
 		_z_buffer[buffer_pos] = z;
 		SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
 		set_draw_color(color);
 		SDL_RenderDrawPoint(_current_context.renderer(), x, y);
 		set_draw_color(r, g, b, a);
+		_render.unlock();
 	}
 }
 
@@ -327,21 +331,30 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 		Matrix4x4 transform;
 		transform = world * view * projection;
 		
+
+		// std::vector<std::thread>	thread_list;
+
 		for (size_t f(0); f < meshes[i].faces.size(); ++f)
 		{
-			Color white(f % 255, f % 255, f % 255, 255);
-			set_draw_color(white);
-			Vector3 vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
-			Vector3 vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
-			Vector3 vertex_c = meshes[i].vertices[meshes[i].faces[f].c];
+			auto draw_face = [&, meshes, i, f]() {
+				Color white(f % 255, f % 255, f % 255, 255);
+				set_draw_color(white);
+				Vector3 vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
+				Vector3 vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
+				Vector3 vertex_c = meshes[i].vertices[meshes[i].faces[f].c];
 
-			Vector3 pixel_a = _project(vertex_a, transform);
-			Vector3 pixel_b = _project(vertex_b, transform);
-			Vector3 pixel_c = _project(vertex_c, transform);
-			// put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
-			// 					pixel_c.x, pixel_c.y, white);
-			put_filled_triangle(pixel_a, pixel_b, pixel_c);
+				Vector3 pixel_a = _project(vertex_a, transform);
+				Vector3 pixel_b = _project(vertex_b, transform);
+				Vector3 pixel_c = _project(vertex_c, transform);
+				// put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
+				// 					pixel_c.x, pixel_c.y, white);
+				put_filled_triangle(pixel_a, pixel_b, pixel_c);
+			};
+			// thread_list.push_back(std::thread(draw_face));
+			draw_face();
 		}
+		// for (std::thread & obj : thread_list)
+		// 	obj.join();
 	}
 	set_draw_color(r, g, b, a);
 }
