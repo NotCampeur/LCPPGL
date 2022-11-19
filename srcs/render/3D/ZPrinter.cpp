@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/11/19 17:56:53 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:03:40 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,7 @@ lcppgl::ZPrinter::_scan_line(float y,
 	float z1(interpolate(a.z, b.z, gradient1));
 	float z2(interpolate(c.z, d.z, gradient2));
 
+	// It would fix an issue to and the code
 	// if (start_x > end_x)
 	// {
 	// 	std::swap(start_x, end_x);
@@ -334,35 +335,27 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 
 		Matrix4x4 transform;
 		transform = world * view * projection;
-		
 
-		// std::vector<std::thread>	thread_list;
 		// bring the numbers of faces to 255 if number of faces is lower than 255.
 		int gradient(255 / meshes[i].faces.size() + 1);
 
 		for (size_t f(0); f < meshes[i].faces.size(); ++f)
 		{
-			auto draw_face = [&, meshes, i, f]() {
-				int c((meshes[i].faces.size() >= 255) ? f % 255 : f * gradient);
-				Color white(c,  c,  c, 255);
-				set_draw_color(white);
-				Vector3 vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
-				Vector3 vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
-				Vector3 vertex_c = meshes[i].vertices[meshes[i].faces[f].c];
+			int c((meshes[i].faces.size() >= 255) ? f % 255 : f * gradient);
+			Color white(c,  c,  c, 255);
+			set_draw_color(white);
+			Vector3 vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
+			Vector3 vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
+			Vector3 vertex_c = meshes[i].vertices[meshes[i].faces[f].c];
 
-				Vector3 pixel_a = _project(vertex_a, transform);
-				Vector3 pixel_b = _project(vertex_b, transform);
-				Vector3 pixel_c = _project(vertex_c, transform);
-				// put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
-				// 					pixel_c.x, pixel_c.y, white);
-				// std::cout << "Draw face : " << f << std::endl;
-				put_filled_triangle(pixel_a, pixel_b, pixel_c);
-			};
-			// thread_list.push_back(std::thread(draw_face));
-			draw_face();
+			Vector3 pixel_a = _project(vertex_a, transform);
+			Vector3 pixel_b = _project(vertex_b, transform);
+			Vector3 pixel_c = _project(vertex_c, transform);
+			// put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
+			// 					pixel_c.x, pixel_c.y, white);
+			// std::cout << "Draw face : " << f << std::endl;
+			put_filled_triangle(pixel_a, pixel_b, pixel_c);
 		}
-		// for (std::thread & obj : thread_list)
-		// 	obj.join();
 	}
 	set_draw_color(r, g, b, a);
 }
