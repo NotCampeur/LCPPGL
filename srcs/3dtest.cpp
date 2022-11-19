@@ -10,14 +10,14 @@ void	draw_cube(lcppgl::Context &context, void *param)
 	key_pressed * keys(reinterpret_cast<key_pressed *>(param));
 
 	static Fps_counter fps;
-	static lcppgl::ZPrinter zprinter(context, lcppgl::Camera(Vector3(0, 0, 2.0f)));
+	static lcppgl::ZPrinter zprinter(context, lcppgl::Camera(Vector3(0, 0, 5.0f)));
 	static lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 25);
 	static std::vector<Mesh> meshes;
 	
 	context.set_fps_limit(0);
 
 	if (meshes.size() == 0)
-		meshes.push_back(Mesh::get_from_file("./ressources/suzanne.obj"));
+		meshes.push_back(Mesh::get_from_file("./ressources/cube.obj"));
 
 	fps.update();
 

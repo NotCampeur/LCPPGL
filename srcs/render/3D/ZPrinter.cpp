@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/31 11:53:53 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/19 15:45:23 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,8 @@ lcppgl::ZPrinter::put_pixel(int x, int y, float z)
 	int buffer_pos(y * width + x);
 	if (z <= _z_buffer[buffer_pos])
 	{
-		_render.lock();
 		_z_buffer[buffer_pos] = z;
 		SDL_RenderDrawPoint(_current_context.renderer(), x, y);
-		_render.unlock();
 	}
 }
 
@@ -164,13 +162,11 @@ lcppgl::ZPrinter::put_pixel(int x, int y, float z, const tools::Color & color)
 	int buffer_pos(y * width + x);
 	if (z <= _z_buffer[buffer_pos])
 	{
-		_render.lock();
 		_z_buffer[buffer_pos] = z;
 		SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
 		set_draw_color(color);
 		SDL_RenderDrawPoint(_current_context.renderer(), x, y);
 		set_draw_color(r, g, b, a);
-		_render.unlock();
 	}
 }
 
@@ -333,11 +329,13 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 		
 
 		// std::vector<std::thread>	thread_list;
-
+		// bring the numbers of faces to 255 if number of faces is lower than 255.
+		int gradient(255 / meshes[i].faces.size() + 1);
 		for (size_t f(0); f < meshes[i].faces.size(); ++f)
 		{
 			auto draw_face = [&, meshes, i, f]() {
-				Color white(f % 255, f % 255, f % 255, 255);
+				int c((meshes[i].faces.size() >= 255) ? f % 255 : f * gradient);
+				Color white(c,  c,  c, 255);
 				set_draw_color(white);
 				Vector3 vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
 				Vector3 vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
