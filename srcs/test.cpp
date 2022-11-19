@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/11/19 13:43:25 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:18:07 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,9 @@ void exit_input(lcppgl::Context &context, void *param)
 						break;
 					case SDLK_KP_MINUS:
 						keys->minus = true;
+						break;
+					case SDLK_SPACE:
+						keys->space = true;
 						break;
 					case SDLK_F11:
 						context.set_fullscreen(!context.is_fullscreen());

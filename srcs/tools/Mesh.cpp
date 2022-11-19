@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 16:25:11 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 16:51:51 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:37:43 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ std::ostream & operator << (std::ostream & os, const lcppgl::tools::Mesh & to_pr
 	for (size_t i(0); i < to_print.faces.size(); ++i)
 		os << i << " : " << to_print.faces[i] << '\n';
 	os << to_print.name << " position is : " << to_print.pos << "\n"
-		 << to_print.name << " rotation is : " << to_print.pos;
+		 << to_print.name << " rotation is : " << to_print.rotation;
 
 	return os;
 }

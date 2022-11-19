@@ -17,7 +17,18 @@ void	draw_cube(lcppgl::Context &context, void *param)
 	context.set_fps_limit(0);
 
 	if (meshes.size() == 0)
-		meshes.push_back(Mesh::get_from_file("./ressources/cube.obj"));
+	{
+		Mesh cube = Mesh::get_from_file("./ressources/cube.obj");
+		meshes.push_back(cube);
+		cube.pos = Vector3(-6.1f, 3, 0);
+		meshes.push_back(cube);
+		cube.pos = Vector3(-6.1f, -2.5f, 0);
+		meshes.push_back(cube);
+		cube.pos = Vector3(6.1f, -2.5f, 0);
+		meshes.push_back(cube);
+		cube.pos = Vector3(6.1f, 3, 0);
+		meshes.push_back(cube);
+	}
 
 	fps.update();
 
@@ -54,6 +65,8 @@ void	draw_cube(lcppgl::Context &context, void *param)
 				m.rotation.z += 1.0f;
 			if (keys->e)
 				m.rotation.z -= 1.0f;
+			if (keys->space)
+				std::cout << m << std::endl;
 		}
 		keys->reset();
 	}

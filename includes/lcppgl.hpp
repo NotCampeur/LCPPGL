@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:00:58 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/11/19 11:38:42 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:17:42 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ struct key_pressed
 	bool q;
 	bool plus;
 	bool minus;
+	bool space;
 
 	key_pressed()
 	: up(false), down(false), left(false), right(false)
 	, w(false), a(false), s(false), d(false)
-	, e(false), q(false), plus(false), minus(false)
+	, e(false), q(false), plus(false), minus(false), space(false)
 	{}
 
 	void	reset()
@@ -48,6 +49,7 @@ struct key_pressed
 		q = false;
 		plus = false;
 		minus = false;
+		space = false;
 	}
 };
 
