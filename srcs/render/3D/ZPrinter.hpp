@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:38:32 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/31 10:55:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/03 15:02:45 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@
 
 namespace lcppgl
 {
+	struct ScanLineData
+	{
+		int currentY;
+		float ndotla;
+		float ndotlb;
+		float ndotlc;
+		float ndotld;
+
+		ScanLineData()
+		: currentY(0), ndotla(0.0f), ndotlb(0.0f), ndotlc(0.0f), ndotld(0.0f)
+		{}
+	};
+
 	/**
 	 * @brief A class that have purpose to put 3D shapes with depth on screen.
 	 */
@@ -38,22 +51,24 @@ namespace lcppgl
 			ZPrinter &	operator = (const ZPrinter & to_copy);
 			
 			// Transform a 3D point into a screen adjusted 2D point using the given matrix.
-			tools::Vector3	_project(const tools::Vector3 &vertex,
+			tools::Vertex	_project(const tools::Vertex &vertex,
 							const tools::Matrix4x4 &matrix) const;
 			
 			//! Might return SDL_Point[] later.
 			//Algorithm used to put filled triangle.
 			void	_scan_line(tools::Color color,
-								float y,
+								ScanLineData data,
 								const tools::Vector3 & a, const tools::Vector3 & b,
 								const tools::Vector3 & c, const tools::Vector3 & d);
 
-			void	_scan_line(float y,
+			void	_scan_line(ScanLineData data,
 								const tools::Vector3 & a, const tools::Vector3 & b,
 								const tools::Vector3 & c, const tools::Vector3 & d);
 
 		public:
-			ZPrinter(Context & context, const Camera & cam);
+			tools::Vector3	light_src;
+			
+			ZPrinter(Context & context, const Camera & cam, const tools::Vector3 & light);
 			~ZPrinter();
 
 			__attribute__ ((deprecated)) void	set_current_context(Context & context);
@@ -86,8 +101,8 @@ namespace lcppgl
 			void	put_triangle(int x1, int y1, int x2, int y2, int x3, int y3);
 			void	put_triangle(int x1, int y1, int x2, int y2, int x3, int y3,
 									const tools::Color & color);
-			void	put_filled_triangle(tools::Vector3 a, tools::Vector3 b,
-										tools::Vector3 c);
+			void	put_filled_triangle(tools::Vertex a, tools::Vertex b,
+										tools::Vertex c);
 			void	put_filled_triangle(tools::Vector3 a, tools::Vector3 b,
 										tools::Vector3 c, tools::Color color);
 

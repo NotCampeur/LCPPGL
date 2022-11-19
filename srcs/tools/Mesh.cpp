@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 16:25:11 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 16:51:51 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:21:18 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,13 @@ Mesh::get_from_file(const std::string & path_to_file)
 			result.name = std::string(buffer + 2);
 		else if (buffer[0] == 'v')
 		{
-			Vector3	vertex;
+			Vertex vertex;
 			char 	*y_val;
 			char 	*z_val;
 
-			vertex.x = strtof(buffer + 2, &y_val);
-			vertex.y = strtof(y_val, &z_val);
-			vertex.z = strtof(z_val, NULL);
+			vertex.coordinates.x = strtof(buffer + 2, &y_val);
+			vertex.coordinates.y = strtof(y_val, &z_val);
+			vertex.coordinates.z = strtof(z_val, NULL);
 
 			result.vertices.push_back(vertex);
 		}
@@ -98,7 +98,7 @@ std::ostream & operator << (std::ostream & os, const lcppgl::tools::Mesh & to_pr
 {
 	os << to_print.name << " has " << to_print.vertices.size() << " vertices :\n";
 	for (size_t i(0); i < to_print.vertices.size(); ++i)
-		os << i << " : " << to_print.vertices[i] << '\n';
+		os << i << " coordinates : " << to_print.vertices[i].coordinates << '\n';
 	os << to_print.name << " has " << to_print.faces.size() << " faces :\n";
 	for (size_t i(0); i < to_print.faces.size(); ++i)
 		os << i << " : " << to_print.faces[i] << '\n';

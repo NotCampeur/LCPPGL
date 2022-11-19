@@ -6,12 +6,13 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:28:45 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/26 16:00:37 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/03 15:10:20 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cmath>
 #include <algorithm>
+#include "Vector3.hpp"
 
 namespace lcppgl
 {
@@ -31,6 +32,19 @@ namespace lcppgl
 		float interpolate(float min, float max, float gradient)
 		{
 			return (min + (max - min) * clamp(gradient));
+		}
+		
+		// Compute the cosine of the angle between the light vector and the normal
+		// Returns a value between 0 and 1
+		float computeNDotL(const Vector3 & vertex, const Vector3 & normal,
+							const Vector3 & lightPosition)
+		{
+			Vector3 lightDirection = lightPosition - vertex;
+			
+			normal.normalize();
+			lightDirection.normalize();
+			
+			return std::max(0.0f, normal.dot(lightDirection));
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/31 11:53:53 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/17 14:19:47 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 using namespace lcppgl::tools;
 
-lcppgl::ZPrinter::ZPrinter(lcppgl::Context & context, const Camera & cam)
+lcppgl::ZPrinter::ZPrinter(lcppgl::Context & context, const Camera & cam,
+							const Vector3 & light)
 : _current_context(context)
 , _z_buffer(new float[_current_context.width() * _current_context.height()])
-, _cam(cam)
+, _cam(cam), light_src(light)
 {
 	float	max(std::numeric_limits<float>::max());
 	int		buff_size(_current_context.width() * _current_context.height());
@@ -174,24 +175,27 @@ lcppgl::ZPrinter::put_pixel(int x, int y, float z, const tools::Color & color)
 	}
 }
 
-Vector3
-lcppgl::ZPrinter::_project(const Vector3 &vertex, const Matrix4x4 &matrix) const
+Vertex
+lcppgl::ZPrinter::_project(const Vertex &vertex, const Matrix4x4 &matrix) const
 {
-	Vector3 td_point = matrix * vertex;
+	Vector3 td_point = matrix * vertex.coordinates;
+	//?Still not sure about this part.
+	Vector3 world_point = matrix * vertex.world_coordinates;
+	Vector3 normal = matrix * vertex.normal;
 
 	td_point.x = (td_point.x + 1) * 0.5 * _current_context.width();
 	td_point.y = (1 - (td_point.y + 1) * 0.5) * _current_context.height();
 	
-	return td_point;
+	return Vertex(normal, td_point, world_point);
 }
 
 void
-lcppgl::ZPrinter::_scan_line(float y,
+lcppgl::ZPrinter::_scan_line(ScanLineData data,
 								const Vector3 & a, const Vector3 & b,
 								const Vector3 & c, const Vector3 & d)
 {
-	float gradient1 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
-	float gradient2 = (c.y != d.y) ? (y - c.y) / (d.y - c.y) : 1.0f;
+	float gradient1 = (a.y != b.y) ? (data.currentY - a.y) / (b.y - a.y) : 1.0f;
+	float gradient2 = (c.y != d.y) ? (data.currentY - c.y) / (d.y - c.y) : 1.0f;
 
 	float start_x(interpolate(a.x, b.x, gradient1));
 	float end_x(interpolate(c.x, d.x, gradient2));
@@ -203,18 +207,21 @@ lcppgl::ZPrinter::_scan_line(float y,
 	{
 		float z_gradient = (x - start_x) / (end_x - start_x);
 		float current_z = interpolate(z1, z2, z_gradient);
-		put_pixel(x, y, current_z);
+		// Color color(255 * data.ndotla, 255 * data.ndotla, 255 * data.ndotla, 255);
+		
+		// put_pixel(x, data.currentY, current_z, color);
+		put_pixel(x, data.currentY, current_z);
 	}
 }
 
 void
 lcppgl::ZPrinter::_scan_line(Color color,
-								float y,
+								ScanLineData data,
 								const Vector3 & a, const Vector3 & b,
 								const Vector3 & c, const Vector3 & d)
 {
-	float gradient1 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
-	float gradient2 = (c.y != d.y) ? (y - c.y) / (d.y - c.y) : 1.0f;
+	float gradient1 = (a.y != b.y) ? (data.currentY - a.y) / (b.y - a.y) : 1.0f;
+	float gradient2 = (c.y != d.y) ? (data.currentY - c.y) / (d.y - c.y) : 1.0f;
 
 	float start_x(interpolate(a.x, b.x, gradient1));
 	float end_x(interpolate(c.x, d.x, gradient2));
@@ -226,44 +233,51 @@ lcppgl::ZPrinter::_scan_line(Color color,
 	{
 		float z_gradient = (x - start_x) / (end_x - start_x);
 		float current_z = interpolate(z1, z2, z_gradient);
-		put_pixel(x, y, current_z, color);
+		put_pixel(x, data.currentY, current_z, color);
 	}
 }
 
 void
-lcppgl::ZPrinter::put_filled_triangle(Vector3 a, Vector3 b, Vector3 c)
+lcppgl::ZPrinter::put_filled_triangle(Vertex a, Vertex b, Vertex c)
 {
 	float a_b_slope(0.0f);
 	float a_c_slope(0.0f);
+	ScanLineData data;
 
 	// Sort vertices based on their y position.
-	if (a.y > b.y)
+	if (a.coordinates.y > b.coordinates.y)
 		std::swap(a, b);
-	if (b.y > c.y)
+	if (b.coordinates.y > c.coordinates.y)
 		std::swap(b, c);
-	if (a.y > b.y)
+	if (a.coordinates.y > b.coordinates.y)
 		std::swap(a, b);
 
-	if (b.y - a.y > 0)
-		a_b_slope = (b.x - a.x) / (b.y - a.y);
-	if (c.y - a.y > 0)
-		a_c_slope = (c.x - a.x) / (c.y - a.y);
+	if (b.coordinates.y - a.coordinates.y > 0)
+		a_b_slope = (b.coordinates.x - a.coordinates.x) / (b.coordinates.y - a.coordinates.y);
+	if (c.coordinates.y - a.coordinates.y > 0)
+		a_c_slope = (c.coordinates.x - a.coordinates.x) / (c.coordinates.y - a.coordinates.y);
 	
 	if (a_b_slope > a_c_slope)
 	{
-		for (float y(a.y); y < c.y; ++y)
-			if (y < b.y)
-				_scan_line(y, a, c, a, b);
+		for (float y(a.coordinates.y); y < c.coordinates.y; ++y)
+		{
+			data.currentY = y;
+			if (y < b.coordinates.y)
+				_scan_line(data, a.coordinates, c.coordinates, a.coordinates, b.coordinates);
 			else
-				_scan_line(y, a, c, b, c);
+				_scan_line(data, a.coordinates, c.coordinates, b.coordinates, c.coordinates);
+		}
 	}
 	else
 	{
-		for (float y(a.y); y < c.y; ++y)
-			if (y < b.y)
-				_scan_line(y, a, b, a, c);
+		for (float y(a.coordinates.y); y < c.coordinates.y; ++y)
+		{
+			data.currentY = y;
+			if (y < b.coordinates.y)
+				_scan_line(data, a.coordinates, b.coordinates, a.coordinates, c.coordinates);
 			else
-				_scan_line(y, b, c, a, c);
+				_scan_line(data, b.coordinates, c.coordinates, a.coordinates, c.coordinates);
+		}
 	}
 }
 
@@ -273,6 +287,7 @@ lcppgl::ZPrinter::put_filled_triangle(Vector3 a, Vector3 b, Vector3 c,
 {
 	float a_b_slope(0.0f);
 	float a_c_slope(0.0f);
+	ScanLineData data;
 
 	// Sort vertices based on their y position.
 	if (a.y > b.y)
@@ -290,18 +305,24 @@ lcppgl::ZPrinter::put_filled_triangle(Vector3 a, Vector3 b, Vector3 c,
 	if (a_b_slope > a_c_slope)
 	{
 		for (float y(a.y); y < c.y; ++y)
+		{
+			data.currentY = y;
 			if (y < b.y)
-				_scan_line(color, y, a, c, a, b);
+				_scan_line(color, data, a, c, a, b);
 			else
-				_scan_line(color, y, a, c, b, c);
+				_scan_line(color, data, a, c, b, c);
+		}
 	}
 	else
 	{
 		for (float y(a.y); y < c.y; ++y)
+		{
+			data.currentY = y;
 			if (y < b.y)
-				_scan_line(color, y, a, b, a, c);
+				_scan_line(color, data, a, b, a, c);
 			else
-				_scan_line(color, y, b, c, a, c);
+				_scan_line(color, data, b, c, a, c);
+		}
 	}
 }
 
@@ -339,13 +360,13 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 			auto draw_face = [&, meshes, i, f]() {
 				Color white(f % 255, f % 255, f % 255, 255);
 				set_draw_color(white);
-				Vector3 vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
-				Vector3 vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
-				Vector3 vertex_c = meshes[i].vertices[meshes[i].faces[f].c];
+				Vertex vertex_a = meshes[i].vertices[meshes[i].faces[f].a];
+				Vertex vertex_b = meshes[i].vertices[meshes[i].faces[f].b];
+				Vertex vertex_c = meshes[i].vertices[meshes[i].faces[f].c];
 
-				Vector3 pixel_a = _project(vertex_a, transform);
-				Vector3 pixel_b = _project(vertex_b, transform);
-				Vector3 pixel_c = _project(vertex_c, transform);
+				Vertex pixel_a = _project(vertex_a, transform);
+				Vertex pixel_b = _project(vertex_b, transform);
+				Vertex pixel_c = _project(vertex_c, transform);
 				// put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
 				// 					pixel_c.x, pixel_c.y, white);
 				put_filled_triangle(pixel_a, pixel_b, pixel_c);
