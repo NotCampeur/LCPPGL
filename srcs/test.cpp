@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 19:59:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/10/29 23:07:33 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/19 13:43:25 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ float freq = 440;
 
 void exit_input(lcppgl::Context &context, void *param)
 {
-	bool * slow(reinterpret_cast<bool *>(param));
+	key_pressed * keys(reinterpret_cast<key_pressed *>(param));
 	
 	SDL_Event event;
-	if (SDL_PollEvent(&event))
+	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
 		{
@@ -34,22 +34,57 @@ void exit_input(lcppgl::Context &context, void *param)
 				context.stop();
 				break;
 			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_ESCAPE)
+				switch (event.key.keysym.sym)
 				{
-					context.remove_render_functor(0);
-					lcppgl::Application::instance().stop();
-				}
-				else if (event.key.keysym.sym == SDLK_F11)
-				{
-					context.set_fullscreen(!context.is_fullscreen());
-					if (context.is_fullscreen())
-						context.set_size(1920, 1080);
-					else
-						context.set_size(1920, 1080);
-				}
-				else if (event.key.keysym.sym == SDLK_s)
-				{
-					(*slow) = !(*slow);
+					case SDLK_ESCAPE:
+						context.remove_render_functor(0);
+						lcppgl::Application::instance().stop();
+						break;
+					case SDLK_UP:
+						keys->up = true;
+						break;
+					case SDLK_DOWN:
+						keys->down = true;
+						break;
+					case SDLK_LEFT:
+						keys->left = true;
+						break;
+					case SDLK_RIGHT:
+						keys->right = true;
+						break;
+					case SDLK_w:
+						keys->w = true;
+						break;
+					case SDLK_a:
+						keys->a = true;
+						break;
+					case SDLK_s:
+						keys->s = true;
+						break;
+					case SDLK_d:
+						keys->d = true;
+						break;
+					case SDLK_e:
+						keys->e = true;
+						break;
+					case SDLK_q:
+						keys->q = true;
+						break;
+					case SDLK_KP_PLUS:
+						keys->plus = true;
+						break;
+					case SDLK_KP_MINUS:
+						keys->minus = true;
+						break;
+					case SDLK_F11:
+						context.set_fullscreen(!context.is_fullscreen());
+						if (context.is_fullscreen())
+							context.set_size(1920, 1080);
+						else
+							context.set_size(1920, 1080);
+						break;
+					default:
+						break;
 				}
 				break;
 			default:
@@ -379,14 +414,14 @@ int main(void)
 {
 	try
 	{
-		bool slow(false);
+		key_pressed keys;
 		lcppgl::Context &main_context = lcppgl::Application::instance().create_context("lcppgl tests", 1920, 1080);
 
-		main_context.add_event_functor(exit_input, &slow);
+		main_context.add_event_functor(exit_input, &keys);
 		audio_test();
 		while (1)
 		{
-			choose_the_test(main_context, &slow);
+			choose_the_test(main_context, &keys);
 			if (main_context.is_running() == false)
 				break ;
 			lcppgl::Application::instance().run();

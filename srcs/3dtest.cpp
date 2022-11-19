@@ -7,15 +7,15 @@ using namespace lcppgl::tools;
 
 void	draw_cube(lcppgl::Context &context, void *param)
 {
-	bool slow(false);
-	if (param != NULL)
-		slow = *reinterpret_cast<bool *>(param);
+	key_pressed * keys(reinterpret_cast<key_pressed *>(param));
+
 	static Fps_counter fps;
 	static lcppgl::ZPrinter zprinter(context, lcppgl::Camera(Vector3(0, 0, 2.0f)));
+					// lcppgl::Camera(Vector3(0, 0, 2.0f)), Vector3(0, 0, 5.0f));
 	static lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 25);
 	static std::vector<Mesh> meshes;
 	
-	context.set_fps_limit((slow == true) ? 1 : 0);
+	context.set_fps_limit(0);
 
 	if (meshes.size() == 0)
 		meshes.push_back(Mesh::get_from_file("./ressources/suzanne.obj"));
@@ -27,6 +27,35 @@ void	draw_cube(lcppgl::Context &context, void *param)
 	zprinter.put_meshes(meshes.data(), meshes.size());
 	zprinter.present();
 
-	for(Mesh & m: meshes)
-		m.rotation.y += 1.0f;
+	if (keys != NULL)
+	{
+		for(Mesh & m: meshes)
+		{
+			if (keys->up)
+				m.pos.y += 0.1f;
+			if (keys->down)
+				m.pos.y -= 0.1f;
+			if (keys->left)
+				m.pos.x -= 0.1f;
+			if (keys->right)
+				m.pos.x += 0.1f;
+			if (keys->plus)
+				m.pos.z += 0.1f;
+			if (keys->minus)
+				m.pos.z -= 0.1f;
+			if (keys->d)
+				m.rotation.y += 1.0f;
+			if (keys->a)
+				m.rotation.y -= 1.0f;
+			if (keys->s)
+				m.rotation.x += 1.0f;
+			if (keys->w)
+				m.rotation.x -= 1.0f;
+			if (keys->q)
+				m.rotation.z += 1.0f;
+			if (keys->e)
+				m.rotation.z -= 1.0f;
+		}
+		keys->reset();
+	}
 }
