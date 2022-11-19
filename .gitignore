@@ -2,3 +2,4 @@ liblcppgl
 liblcppgl.a
 objs/
 ressources/great.png
+.vscode/
