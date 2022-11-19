@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:41:59 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/11/19 15:45:23 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/11/19 17:56:53 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,18 +189,25 @@ lcppgl::ZPrinter::_scan_line(float y,
 	float gradient1 = (a.y != b.y) ? (y - a.y) / (b.y - a.y) : 1.0f;
 	float gradient2 = (c.y != d.y) ? (y - c.y) / (d.y - c.y) : 1.0f;
 
-	float start_x(interpolate(a.x, b.x, gradient1));
-	float end_x(interpolate(c.x, d.x, gradient2));
+	int start_x(interpolate(a.x, b.x, gradient1));
+	int end_x(interpolate(c.x, d.x, gradient2));
 
-	float z1 = interpolate(a.z, b.z, gradient1);
-	float z2 = interpolate(c.z, d.z, gradient2);
+	float z1(interpolate(a.z, b.z, gradient1));
+	float z2(interpolate(c.z, d.z, gradient2));
 
-	for (float x(start_x); x < end_x; ++x)
+	// if (start_x > end_x)
+	// {
+	// 	std::swap(start_x, end_x);
+	// 	std::swap(z1, z2);
+	// }
+	for (int x(start_x); x < end_x; ++x)
 	{
-		float z_gradient = (x - start_x) / (end_x - start_x);
+		float z_gradient = (x - start_x) / static_cast<float>(end_x - start_x);
 		float current_z = interpolate(z1, z2, z_gradient);
+		// std::cout << "z: " << current_z << ' ';
 		put_pixel(x, y, current_z);
 	}
+	// std::cout << "\n";
 }
 
 void
@@ -245,9 +252,10 @@ lcppgl::ZPrinter::put_filled_triangle(Vector3 a, Vector3 b, Vector3 c)
 	if (c.y - a.y > 0)
 		a_c_slope = (c.x - a.x) / (c.y - a.y);
 	
+	// std::cout << "Lines drawn : " << c.y - a.y << std::endl;
 	if (a_b_slope > a_c_slope)
 	{
-		for (float y(a.y); y < c.y; ++y)
+		for (int y(a.y); y <= static_cast<int>(c.y); ++y)
 			if (y < b.y)
 				_scan_line(y, a, c, a, b);
 			else
@@ -255,7 +263,7 @@ lcppgl::ZPrinter::put_filled_triangle(Vector3 a, Vector3 b, Vector3 c)
 	}
 	else
 	{
-		for (float y(a.y); y < c.y; ++y)
+		for (int y(a.y); y <= static_cast<int>(c.y); ++y)
 			if (y < b.y)
 				_scan_line(y, a, b, a, c);
 			else
@@ -331,6 +339,7 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 		// std::vector<std::thread>	thread_list;
 		// bring the numbers of faces to 255 if number of faces is lower than 255.
 		int gradient(255 / meshes[i].faces.size() + 1);
+
 		for (size_t f(0); f < meshes[i].faces.size(); ++f)
 		{
 			auto draw_face = [&, meshes, i, f]() {
@@ -346,6 +355,7 @@ lcppgl::ZPrinter::put_meshes(Mesh meshes[], int meshes_nb)
 				Vector3 pixel_c = _project(vertex_c, transform);
 				// put_triangle(pixel_a.x, pixel_a.y, pixel_b.x, pixel_b.y,
 				// 					pixel_c.x, pixel_c.y, white);
+				// std::cout << "Draw face : " << f << std::endl;
 				put_filled_triangle(pixel_a, pixel_b, pixel_c);
 			};
 			// thread_list.push_back(std::thread(draw_face));
