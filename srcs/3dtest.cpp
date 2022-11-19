@@ -11,7 +11,6 @@ void	draw_cube(lcppgl::Context &context, void *param)
 
 	static Fps_counter fps;
 	static lcppgl::ZPrinter zprinter(context, lcppgl::Camera(Vector3(0, 0, 2.0f)));
-					// lcppgl::Camera(Vector3(0, 0, 2.0f)), Vector3(0, 0, 5.0f));
 	static lcppgl::Writer writer(context, "/usr/share/fonts/truetype/freefont/FreeSans.ttf", 25);
 	static std::vector<Mesh> meshes;
 	
