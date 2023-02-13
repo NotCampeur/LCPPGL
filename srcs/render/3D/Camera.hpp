@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lcppgl.hpp                                         :+:      :+:    :+:   */
+/*   Camera.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/12 20:00:58 by ldutriez          #+#    #+#             */
-/*   Updated: 2023/02/13 21:21:55 by ldutriez         ###   ########.fr       */
+/*   Created: 2022/10/26 16:05:27 by ldutriez          #+#    #+#             */
+/*   Updated: 2022/10/27 15:38:55 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LCPPGL_HPP
-# define LCPPGL_HPP
+#ifndef LCPPGL_CAMERA_HPP
+# define LCPPGL_CAMERA_HPP
 
-# include <iostream>
-# include <stdlib.h>
-# include "SDL.h"
-// # include "SDL_ttf.h"
-// # include "SDL_image.h"
+# include "Vector3.hpp"
 
-# include "Application.hpp"
-# include "Context.hpp"
-# include "lcppgl_tools.hpp"
-# include "Printer.hpp"
-# include "ZPrinter.hpp"
-# include "Camera.hpp"
+namespace lcppgl
+{
+	struct Camera
+	{
+		tools::Vector3	pos;
+		tools::Vector3	target;
+
+		Camera(const tools::Vector3 & position = tools::Vector3(),
+				const tools::Vector3 & direction = tools::Vector3());
+		Camera(const Camera & to_copy);
+		Camera & operator = (const Camera & to_assign);
+		~Camera();
+	};
+}
 
 #endif

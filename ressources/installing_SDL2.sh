@@ -26,7 +26,7 @@ IS_SUDO=$?
 # If any error occurs, it will return 1.
 function brewSDL2()
 {
-	if [ ! -d "$HOME/.brew/Cellar/sdl2" ]; then
+	if [ ! -d $HOME/.brew/Cellar/sdl2 ]; then
 		echo -e ${YELLOW}"SDL2 is not installed. Installing it now..."${DEFAULT}
 		brew install sdl2
 		if [ $? -ne 0 ]; then
@@ -45,7 +45,7 @@ function brewSDL2()
 # If any error occurs, it will return 1.
 function brewSDL2_image()
 {
-	if [ ! -d "$HOME/.brew/Cellar/sdl2_image" ]; then
+	if [ ! -d $HOME/.brew/Cellar/sdl2_image ]; then
 		echo -e ${YELLOW}"SDL2_image is not installed. Installing it now..."${DEFAULT}
 		brew install sdl2_image
 		if [ $? -ne 0 ]; then
@@ -64,7 +64,7 @@ function brewSDL2_image()
 # If any error occurs, it will return 1.
 function brewSDL2_ttf()
 {
-	if [ ! -d "$HOME/.brew/Cellar/sdl2_ttf" ]; then
+	if [ ! -d $HOME/.brew/Cellar/sdl2_ttf ]; then
 		echo -e ${YELLOW}"SDL2_ttf is not installed. Installing it now..."${DEFAULT}
 		brew install sdl2_ttf
 		if [ $? -ne 0 ]; then
@@ -83,7 +83,7 @@ function brewSDL2_ttf()
 # If any error occurs, it will return 1.
 function brewSDL2_mixer()
 {
-	if [ ! -d "$HOME/.brew/Cellar/sdl2_mixer" ]; then
+	if [ ! -d $HOME/.brew/Cellar/sdl2_mixer ]; then
 		echo -e ${YELLOW}"SDL2_mixer is not installed. Installing it now..."${DEFAULT}
 		brew install sdl2_mixer
 		if [ $? -ne 0 ]; then
@@ -102,7 +102,7 @@ function brewSDL2_mixer()
 # If any error occurs, it will return 1.
 function brewSDL2_net()
 {
-	if [ ! -d "$HOME/.brew/Cellar/sdl2_net" ]; then
+	if [ ! -d $HOME/.brew/Cellar/sdl2_net ]; then
 		echo -e ${YELLOW}"SDL2_net is not installed. Installing it now..."${DEFAULT}
 		brew install sdl2_net
 		if [ $? -ne 0 ]; then
@@ -121,7 +121,7 @@ function brewSDL2_net()
 # If any error occurs, it will return 1.
 function brewSDL2_gfx()
 {
-	if [ ! -d "$HOME/.brew/Cellar/sdl2_gfx" ]; then
+	if [ ! -d $HOME/.brew/Cellar/sdl2_gfx ]; then
 		echo -e ${YELLOW}"SDL2_gfx is not installed. Installing it now..."${DEFAULT}
 		brew install sdl2_gfx
 		if [ $? -ne 0 ]; then
@@ -140,7 +140,7 @@ function brewSDL2_gfx()
 # If any error occurs, it will return 1.
 function checkBrew()
 {
-	if [ ! -d "$HOME/.brew" ]; then
+	if [ ! -d $HOME/.brew ]; then
 		echo -e ${YELLOW}"Brew is not installed. Installing it now..."${DEFAULT}
 		/bin/zsh -c "rm -rf $HOME/.brew && git clone --progress --depth=1 https://github.com/Homebrew/brew $HOME/.brew && echo 'export PATH=$HOME/.brew/bin:$PATH' >> $HOME/.zshrc && source $HOME/.zshrc && brew update"
 		if [ $? -ne 0 ]; then
@@ -160,7 +160,7 @@ function checkBrew()
 # If any error occurs, it will return 1.
 function aptSDL2()
 {
-	if [ ! -d "/usr/share/doc/libsdl2-2.0*" ]; then
+	if [ ! -d /usr/share/doc/libsdl2-2.0* ]; then
 		echo -e ${YELLOW}"SDL2 is not installed. Installing it now..."${DEFAULT}
 		sudo apt-get install libsdl2-2.0 libsdl2-dev
 		if [ $? -ne 0 ]; then
@@ -179,7 +179,7 @@ function aptSDL2()
 # If any error occurs, it will return 1.
 function aptSDL2_image()
 {
-	if [ ! -d "/usr/share/doc/libsdl2_image-2*" ]; then
+	if [ ! -d /usr/share/doc/libsdl2-image-2* ]; then
 		echo -e ${YELLOW}"SDL2_image is not installed. Installing it now..."${DEFAULT}
 		sudo apt-get install libsdl2-image-2.0-0
 		if [ $? -ne 0 ]; then
@@ -198,7 +198,7 @@ function aptSDL2_image()
 # If any error occurs, it will return 1.
 function aptSDL2_ttf()
 {
-	if [ ! -d "/usr/share/doc/libsdl2_ttf-2*" ]; then
+	if [ ! -d /usr/share/doc/libsdl2-ttf-2* ]; then
 		echo -e ${YELLOW}"SDL2_ttf is not installed. Installing it now..."${DEFAULT}
 		sudo apt-get install libsdl2-ttf-2.0-0
 		if [ $? -ne 0 ]; then
@@ -217,7 +217,7 @@ function aptSDL2_ttf()
 # If any error occurs, it will return 1.
 function aptSDL2_mixer()
 {
-	if [ ! -d "/usr/share/doc/libsdl2_mixer-2*" ]; then
+	if [ ! -d /usr/share/doc/libsdl2-mixer-2* ]; then
 		echo -e ${YELLOW}"SDL2_mixer is not installed. Installing it now..."${DEFAULT}
 		sudo apt-get install libsdl2-mixer-2.0-0
 		if [ $? -ne 0 ]; then
@@ -236,7 +236,7 @@ function aptSDL2_mixer()
 # If any error occurs, it will return 1.
 function aptSDL2_net()
 {
-	if [ ! -d "/usr/share/doc/libsdl2_net-2*" ]; then
+	if [ ! -d /usr/share/doc/libsdl2-net-2* ]; then
 		echo -e ${YELLOW}"SDL2_net is not installed. Installing it now..."${DEFAULT}
 		sudo apt-get install libsdl2-net-2.0-0
 		if [ $? -ne 0 ]; then
@@ -255,7 +255,7 @@ function aptSDL2_net()
 # If any error occurs, it will return 1.
 function aptSDL2_gfx()
 {
-	if [ ! -d "/usr/share/doc/libsdl2_gfx-1*" ]; then
+	if [ ! -d /usr/share/doc/libsdl2-gfx-1* ]; then
 		echo -e ${YELLOW}"SDL2_gfx is not installed. Installing it now..."${DEFAULT}
 		sudo apt-get install libsdl2-gfx-1.0-0
 		if [ $? -ne 0 ]; then
@@ -275,8 +275,8 @@ function aptSDL2_gfx()
 # Only if the installation is successful.
 function downloadPicture()
 {
-	if [ ! -d "./ressources/great.png" ]; then
-		curl -s -o ./ressources/great.png https://cdn.intra.42.fr/users/small_chdespon.jpg
+	if [ ! -d ./ressources/great.png ]; then
+		curl -s -o ./ressources/great.png https://a2b2.org/sites/default/a/public/fb_img_1599284128726.jpg
 		if [ $? -ne 0 ]; then
 			echo -e ${ORANGE}"Download of the picture failed."${DEFAULT}
 			IS_ERROR=1

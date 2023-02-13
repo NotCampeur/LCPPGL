@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:48:15 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/25 17:09:40 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/29 22:46:46 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,20 +171,21 @@ lcppgl::Context::event_manager(void)
 {
 	// std::cout << "Context::event_manager()" << std::endl;
 	for (size_t i(0); i < _event_functors.size(); i++)
-		_event_functors[i](*this);
+		_event_functors[i].hook(*this, _event_functors[i].param);
 }
 
 void
 lcppgl::Context::render_manager(void)
 {
 	for (size_t i(0); i < _render_functors.size(); i++)
-		_render_functors[i](*this);
+		_render_functors[i].hook(*this, _render_functors[i].param);
 }
 
 int
-lcppgl::Context::add_event_functor(void (*functor)(lcppgl::Context &))
+lcppgl::Context::add_event_functor(void (*functor)(lcppgl::Context &, void *),
+									void *param)
 {
-	_event_functors.push_back(functor);
+	_event_functors.push_back(lcppgl::event_func(functor, param));
 	return _event_functors.size() - 1;
 }
 
@@ -195,9 +196,10 @@ lcppgl::Context::remove_event_functor(const int index)
 }
 
 int
-lcppgl::Context::add_render_functor(void (*functor)(lcppgl::Context &))
+lcppgl::Context::add_render_functor(void (*functor)(lcppgl::Context &, void *),
+									void *param)
 {
-	_render_functors.push_back(functor);
+	_render_functors.push_back(lcppgl::event_func(functor, param));
 	return _render_functors.size() - 1;
 }
 

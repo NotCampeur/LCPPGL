@@ -18,6 +18,21 @@
 
 namespace lcppgl
 {
+	class Context;
+
+	struct event_func
+	{
+		// void (*)(lcppgl::Context &, void *) hook_type;
+
+		void		(*hook)(lcppgl::Context &, void *);
+		void *		param;
+
+		event_func(void (*p_hook)(lcppgl::Context &, void *), void *p_param)
+		: hook(p_hook), param(p_param) {}
+
+		~event_func() {}
+	};
+
 	// This class is used to manage the SDL context (window, renderer, etc.)
 	class Context
 	{
@@ -31,10 +46,10 @@ namespace lcppgl
 
 			unsigned int	_fps_limit;
 			// Functor to call in the event_manager
-			std::vector<void (*)(lcppgl::Context &)>	_event_functors;
+			std::vector<event_func>	_event_functors;
 
 			// Functor to call in the render_manager
-			std::vector<void (*)(lcppgl::Context &)>	_render_functors;
+			std::vector<event_func>	_render_functors;
 
 			void	event_manager(void);
 			void	render_manager(void);
@@ -74,10 +89,12 @@ namespace lcppgl
 			void	stop(void);
 
 			// Return the index of the function in the functor.
-			int		add_event_functor(void (*functor)(lcppgl::Context &));
+			// Param can be and is NULL by default.
+			int		add_event_functor(void (*functor)(lcppgl::Context &, void *), void *param = NULL);
 			void	remove_event_functor(int index);
 			// Return the index of the function in the functor.
-			int		add_render_functor(void (*functor)(lcppgl::Context &));
+			// Param can be and is NULL by default.
+			int		add_render_functor(void (*functor)(lcppgl::Context &, void *), void *param = NULL);
 			void	remove_render_functor(int index);
 
 			Context				&operator=(const Context &rhs);

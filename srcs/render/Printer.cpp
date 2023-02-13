@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:53:01 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/02/06 03:36:05 by ldutriez         ###   ########.fr       */
+/*   Updated: 2023/02/13 20:30:23 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,21 +73,57 @@ lcppgl::Printer::put_filled_rect(const lcppgl::tools::Rectangle & rect, const lc
 }
 
 void
-lcppgl::Printer::put_line(const lcppgl::tools::Point & p1, const lcppgl::tools::Point & p2)
+lcppgl::Printer::put_line(const lcppgl::tools::Rectangle & points)
 {
-	SDL_RenderDrawLine(_current_context.renderer(), p1.x, p1.y, p2.x, p2.y);
+	SDL_RenderDrawLine(_current_context.renderer(),
+		points.x(), points.y(), points.width(), points.height());
 }
 
 void
-lcppgl::Printer::put_line(const lcppgl::tools::Point & p1, const lcppgl::tools::Point & p2, const lcppgl::tools::Color & color)
+lcppgl::Printer::put_line(const lcppgl::tools::Rectangle & points, const lcppgl::tools::Color & color)
 {
 	Uint8 r, g, b, a;
 
 	SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
 	set_draw_color(color);
-	SDL_RenderDrawLine(_current_context.renderer(), p1.x, p1.y, p2.x, p2.y);
+	SDL_RenderDrawLine(_current_context.renderer(),
+		points.x(), points.y(), points.width(), points.height());
 	set_draw_color(r, g, b, a);
 }
+
+void
+lcppgl::Printer::put_triangle(int x1, int y1, int x2, int y2, int x3, int y3)
+{
+	SDL_RenderDrawLine(_current_context.renderer(), x1, y1, x2, y2);
+	SDL_RenderDrawLine(_current_context.renderer(), x2, y2, x3, y3);
+	SDL_RenderDrawLine(_current_context.renderer(), x3, y3, x1, y1);
+}
+
+void
+lcppgl::Printer::put_triangle(int x1, int y1, int x2, int y2, int x3, int y3,
+				const tools::Color & color)
+{
+	Uint8 r, g, b, a;
+
+	SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
+	set_draw_color(color);
+
+	put_triangle(x1, y1, x2, y2, x3, y3);
+
+	set_draw_color(r, g, b, a);
+}
+
+void
+lcppgl::Printer::put_pixel(int x, int y, const tools::Color & color)
+{
+	Uint8 r, g, b, a;
+
+	SDL_GetRenderDrawColor(_current_context.renderer(), &r, &g, &b, &a);
+	set_draw_color(color);
+	SDL_RenderDrawPoint(_current_context.renderer(), x, y);
+	set_draw_color(r, g, b, a);
+}
+
 void
 lcppgl::Printer::clear(void)
 {

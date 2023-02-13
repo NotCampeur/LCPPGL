@@ -6,13 +6,13 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/12 20:05:44 by ldutriez          #+#    #+#              #
-#    Updated: 2022/03/03 23:09:27 by ldutriez         ###   ########.fr        #
+#    Updated: 2023/02/13 21:26:03 by ldutriez         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	=		liblcppgl
 
-CC 		=		clang++
+CC 		=		c++
 
 SRC_DIR = 		$(shell find srcs -type d)
 INC_DIR = 		$(shell find includes -type d) \
@@ -22,19 +22,36 @@ OBJ_DIR = 		objs
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-SRC 	=		test.cpp \
-				\
-				Application.cpp \
-				Context.cpp \
-				\
-				Rectangle.cpp Color.cpp Texture.cpp \
-				\
-				Printer.cpp #Writer.cpp
+TOOLS	=		Rectangle.cpp Color.cpp Texture.cpp \
+				basic_functions.cpp \
+				Vector3.cpp Face.cpp Mesh.cpp Matrix4x4.cpp
+
+SYSTEM	=		Application.cpp Context.cpp
+
+RENDER	=		Printer.cpp ZPrinter.cpp Camera.cpp
+
+SRC 	=		${SYSTEM} \
+				${RENDER} \
+				${TOOLS}
+
+TEST_SRC =		test.cpp 3dtest.cpp \
+				${SRC}
 
 OBJ		=		$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
-
+TEST_OBJ = 		$(addprefix $(OBJ_DIR)/, $(TEST_SRC:%.cpp=%.o))
 #Compilation flag
-CFLAGS	=		-Wall -Wextra -Werror -std=c++98 -g3
+CFLAGS	=		-Wall -Wextra -Werror -pthread `sdl2-config --cflags`
+
+# Colors
+
+_GREY=	$'\033[30m
+_RED=	$'\033[31m
+_GREEN=	$'\033[32m
+_YELLOW=$'\033[33m
+_BLUE=	$'\033[34m
+_PURPLE=$'\033[35m
+_CYAN=	$'\033[36m
+_WHITE=	$'\033[37m
 
 DEBUG =
 # Add fsanitize to the compilation flags if DEBUG is set to fs.
@@ -64,19 +81,9 @@ endif
 #Include flag
 IFLAGS	=		$(foreach dir, $(INC_DIR), -I$(dir))
 
-# SDL = ./ressources/great.png
+print-%  : ; @echo $* = $($*)
+
 SDL = ./Makefile
-
-# Colors
-
-_GREY=	$'\033[30m
-_RED=	$'\033[31m
-_GREEN=	$'\033[32m
-_YELLOW=$'\033[33m
-_BLUE=	$'\033[34m
-_PURPLE=$'\033[35m
-_CYAN=	$'\033[36m
-_WHITE=	$'\033[37m
 
 all:			$(SDL) $(NAME).a
 
@@ -89,16 +96,16 @@ $(NAME).a:		$(OBJ) Makefile
 $(SDL):
 				@./ressources/installing_SDL2.sh
 
-test:			$(NAME).a
+test:			$(NAME).a $(TEST_OBJ)
 				@echo "-----\nTesting $(_YELLOW)$(NAME)$(_WHITE) ... \c"
-				@$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` $< -o $(NAME)
-				@# @$(CC) $(CFLAGS) $(IFLAGS) $(OBJ) `sdl2-config --libs` -lSDL2_ttf -lSDL2_image $< -o $(NAME)
+				@$(CC) $(CFLAGS) $(IFLAGS) $(TEST_OBJ) `sdl2-config --libs` $< -o $(NAME)
+				@# @$(CC) $(CFLAGS) $(IFLAGS) $(TEST_OBJ) `sdl2-config --libs` $< -o $(NAME)
 				@if [ "$(DEBUG)" = "vl" ]; then \
-					valgrind --leak-check=full --show-leak-kinds=all ./$<; \
+					valgrind --leak-check=full --show-leak-kinds=all ./$(NAME); \
 				elif [ "$(DEBUG)" = "gdb" ]; then \
-					gdb -tui ./$<; \
+					gdb -tui ./$(NAME); \
 				else \
-					./$<; \
+					./$(NAME); \
 				fi
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
@@ -112,7 +119,7 @@ show:
 $(OBJ_DIR)/%.o : 	%.cpp
 				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
 				@mkdir -p $(OBJ_DIR)
-				@$(CC) $(CFLAGS) $(IFLAGS) `sdl2-config --cflags` -o $@ -c $<
+				@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
 				@echo "$(_GREEN)DONE$(_WHITE)"
 
 re:				fclean all

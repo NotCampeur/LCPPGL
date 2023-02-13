@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 20:48:15 by ldutriez          #+#    #+#             */
-/*   Updated: 2021/11/23 10:04:35 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/10/11 13:24:49 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 lcppgl::Application::Application(void) : lcppgl::Singleton()
 , _context(), _is_running(false)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 		throw std::invalid_argument(SDL_GetError());
 	// if (TTF_Init() == -1)
 		// throw std::invalid_argument(TTF_GetError());
